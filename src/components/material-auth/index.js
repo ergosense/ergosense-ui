@@ -1,40 +1,34 @@
 import React, { Component} from 'react';
+import { connect } from 'react-redux';
 
 import Loading from './loading';
 import SignIn from './signin';
+import Default from './default';
 
-export const State = {
-  LOADING: 'loading',
-  SIGNED_OUT: 'signedout'
-};
-
-export default class MaterialAuth extends Component {
+class MaterialAuth extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      step: props.step || State.LOADING,
-      user: null
-    }
-
-    this.propogate = this.propogate.bind(this);
+    this.state = { step: 'loading' };
+    this.setStep = this.setStep.bind(this);
   }
 
-  propogate(step, user) {
-    console.log(step);
-    console.log(user);
-    console.log({ step, user });
+  setStep(step, user) {
     this.setState({ step, user });
   }
 
   render () {
-    switch (this.state.step) {
-      case State.LOADING:
-        return (<Loading propogate={this.propogate}/>)
-      case State.SIGNED_OUT:
-        return (<SignIn propogate={this.propogate}/>)
-      default:
-        return (<div>{this.props.children}</div>)
-    }
+    return (
+      <React.Fragment>
+        <Loading step={this.state.step} setStep={this.setStep}/>
+        <SignIn step={this.state.step}  setStep={this.setStep} />
+        <Default step={this.state.step}>{this.props.children}</Default>
+      </React.Fragment>
+    );
   }
 }
+
+const mapStateToProps = (state) => {
+  return { ...state.login }
+};
+
+export default connect(mapStateToProps)(MaterialAuth);

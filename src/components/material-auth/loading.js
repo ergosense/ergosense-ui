@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Auth } from 'aws-amplify';
+import { login, logout } from './actions';
 import { State } from './';
 
-class Loading extends Component
+export default class Loading extends Component
 {
   componentDidMount() {
-    console.log('checking');
     this.checkUser();
   }
 
@@ -14,7 +14,7 @@ class Loading extends Component
 
     return Auth.currentAuthenticatedUser()
       .then(user => {
-        this.props.propogate(null, user);
+        this.props.setStep('loggedin', user);
       })
       .catch(err => {
         console.log(err);
@@ -23,9 +23,8 @@ class Loading extends Component
   }
 
   signOut() {
-    console.log('OOPS');
     Auth.signOut()
-      .then(() => this.props.propogate(State.SIGNED_OUT, null))
+      .then(() => this.props.setStep('loggedout', null))
       .catch(err => { console.log(err); });
   }
 
@@ -33,5 +32,3 @@ class Loading extends Component
     return null;
   }
 }
-
-export default Loading;

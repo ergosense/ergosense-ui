@@ -13,15 +13,16 @@ import './App.css';
 
 import { withAuthenticator } from 'aws-amplify-react';
 import MaterialAuth from './components/material-auth';
-import State from './components/material-auth/state';
 
 class App extends Component {
 
   render() {
     return (
-      <MaterialAuth step='loading'>
-        hello
-      </MaterialAuth>
+      <Provider store={store}>
+        <MaterialAuth>
+          hello
+        </MaterialAuth>
+      </Provider>
     );
   }
   /*
