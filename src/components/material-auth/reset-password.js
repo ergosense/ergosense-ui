@@ -25,39 +25,17 @@ const styles = (theme) => ({
     marginTop: theme.spacing.unit * 8,
     textAlign: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  },
-  link: {
-    textDecoration: 'none',
-    color: theme.palette.primary.main,
-    fontSize: 12,
-    marginTop: 30,
-    display: 'inline-block'
   }
 });
 
-class SignIn extends Form
+class ResetPassword extends Form
 {
-  constructor(props){
-    super(props);
-    this.forgotPassword = this.forgotPassword.bind(this);
-  }
-
-  forgotPassword(e) {
-    e.preventDefault();
-    this.props.dispatch(createAction(STEP_RESET, null));
-  }
-
   handleSubmit(e) {
     super.handleSubmit(e);
-
-    const { email, password } = this.state;
-
-    login(email, password, this.props.dispatch)
-      .then(() => this.release());
   }
 
   render() {
-    if (this.props.step !== STEP_LOGGED_OUT) return null;
+    if (this.props.step !== STEP_RESET) return null;
 
     const { classes } = this.props;
 
@@ -66,7 +44,7 @@ class SignIn extends Form
         <CssBaseline />
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            <Typography variant="headline">Sign in</Typography>
+            <Typography variant="headline">Reset</Typography>
             <form onSubmit={this.handleSubmit}>
               <IconTextField
                 icon={<Email color='action' style={{ fontSize: 20 }}/>}
@@ -106,7 +84,7 @@ class SignIn extends Form
                 Sign in
               </Button>
 
-              <a href="#" onClick={this.forgotPassword} className={classes.link}>
+              <a href="#" onclick={this.forgotPassword}>
                 Forgot your password?
               </a>
             </form>
@@ -121,4 +99,4 @@ const mapStateToProps = (state) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(SignIn));
+export default connect(mapStateToProps)(withStyles(styles)(ResetPassword));

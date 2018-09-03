@@ -18,11 +18,14 @@ class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <MaterialAuth>
-          hello
-        </MaterialAuth>
-      </Provider>
+      <React.Fragment>
+        <CssBaseline />
+        <Provider store={store}>
+          <MaterialAuth>
+            hello
+          </MaterialAuth>
+        </Provider>
+      </React.Fragment>
     );
   }
   /*
