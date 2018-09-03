@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { I18n, JS } from '@aws-amplify/core';
-import { SignIn as AmplifySignIn} from 'aws-amplify-react';
 import { InputAdornment, Typography, CssBaseline, Paper, TextField, Button, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { STEP_LOGGED_OUT, STEP_RESET, createAction, login } from './actions';
+import { STEP_RESET_VERIFY, STEP_RESET, createAction, resetForgottenPassword, forgotPassword } from './actions';
 import Form from './../form';
 import { Lock, Email } from '@material-ui/icons';
 import IconTextField from './components/icon-text-field';
@@ -30,21 +29,92 @@ const styles = (theme) => ({
 
 class ResetPassword extends Form
 {
+  constructor(props) {
+    super(props);
+    this.renderCodeInput = this.renderCodeInput.bind(this);
+    this.codeSent = this.codeSent.bind(this);
+    this.valid = this.valid.bind(this);
+  }
+
   handleSubmit(e) {
     super.handleSubmit(e);
+
+    console.log('SUBMIT HIT!!!');
+
+    const { email, code, password } = this.state;
+
+    if (!code) {
+      forgotPassword(email, this.props.dispatch)
+        .then(data => {
+          this.setState({ delivery: data });
+          this.release();
+        });
+    } else {
+      resetForgottenPassword(email, code, password, this.props.dispatch)
+        .then(data => {
+          console.log(data);
+          this.setState({ delivery: null });
+          this.release();
+        })
+    }
+  }
+
+  codeSent() {
+    return !!this.state.delivery;
+  }
+
+  renderCodeInput() {
+    if (!this.codeSent()) return null;
+
+    return (
+      <React.Fragment>
+        <IconTextField
+          icon={<Email color='action' style={{ fontSize: 20 }}/>}
+          error={false}
+          helperText={''}
+          label="Code"
+          name="code"
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          value={this.state.code || ''}
+          margin="normal"
+          fullWidth
+          autoFocus={true}
+          />
+
+        <TextField
+          error={false}
+          helperText={''}
+          label="Password"
+          name="password"
+          type="password"
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          value={this.state.password || ''}
+          margin="normal"
+          fullWidth
+          />
+      </React.Fragment>
+    );
+  }
+
+  valid(type, error) {
+    return type === 'login-error' && error.code === 'PasswordResetRequiredException';
   }
 
   render() {
-    if (this.props.step !== STEP_RESET) return null;
+    const { error, classes, type } = this.props;
+    console.log(this.props);
+    if (!this.valid(type, error)) return null;
 
-    const { classes } = this.props;
+    const { delivery } = this.state;
 
     return (
       <React.Fragment>
         <CssBaseline />
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            <Typography variant="headline">Reset</Typography>
+            <Typography variant="headline">Reset password</Typography>
             <form onSubmit={this.handleSubmit}>
               <IconTextField
                 icon={<Email color='action' style={{ fontSize: 20 }}/>}
@@ -57,21 +127,10 @@ class ResetPassword extends Form
                 value={this.state.email || ''}
                 margin="normal"
                 fullWidth
+                disabled={this.codeSent()}
                 />
 
-              <IconTextField
-                icon={<Lock color='action' style={{ fontSize: 20 }}/>}
-                error={false}
-                helperText={false}
-                type="password"
-                label="Password"
-                name="password"
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-                value={this.state.password || ''}
-                margin="normal"
-                fullWidth
-                />
+              {this.renderCodeInput()}
 
               <br/><br/>
 
@@ -81,12 +140,8 @@ class ResetPassword extends Form
                 color="primary"
                 disabled={this.isSubmitting()}
                 fullWidth>
-                Sign in
+                Send code
               </Button>
-
-              <a href="#" onclick={this.forgotPassword}>
-                Forgot your password?
-              </a>
             </form>
           </Paper>
         </main>

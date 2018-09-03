@@ -1,9 +1,18 @@
 import { ACTION_LOGIN } from './../components/material-auth/actions'
 
-export default (state = {}, action) => {
+const initial = {
+  type: 'login-logged-out'
+}
+
+export default (state = initial, action) => {
+  console.log(action);
+
   switch (action.type) {
-    case ACTION_LOGIN:
-      return { ...state, ...action.payload }
+    case 'login-reset':
+    case 'login-signed-in':
+    case 'login-error':
+    case 'login-logged-out':
+      return { ...state, ...action }
     default:
       return state;
   }

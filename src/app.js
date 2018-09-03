@@ -1,5 +1,3 @@
-import './config/aws'
-
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
@@ -11,7 +9,8 @@ import SitePage from './pages/site'
 import LoginPage from './pages/login'
 import './App.css';
 
-import { withAuthenticator } from 'aws-amplify-react';
+import { Hub } from 'aws-amplify';
+//import { withAuthenticator } from 'aws-amplify-react';
 import MaterialAuth from './components/material-auth';
 
 class App extends Component {
