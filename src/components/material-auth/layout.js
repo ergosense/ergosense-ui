@@ -18,21 +18,32 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 8,
     textAlign: 'center',
     padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  },
+  link: {
+    textDecoration: 'none',
+    color: theme.palette.secondary.main,
+    fontSize: 12,
+    marginTop: 30,
+    display: 'inline-block'
+  },
+  heading: {
+    marginBottom: theme.spacing.unit * 2
   }
 });
 
 class Layout extends Component
 {
   render() {
-    const { classes } = this.props;
+    const { classes, title, footer } = this.props;
 
     return (
       <React.Fragment>
         <CssBaseline />
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            <Typography variant="headline">Sign in</Typography>
+            <Typography variant="headline" className={classes.heading}>{title}</Typography>
             {this.props.children}
+            { footer ? footer(this.props) : null }
           </Paper>
         </main>
       </React.Fragment>

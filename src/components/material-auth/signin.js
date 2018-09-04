@@ -9,6 +9,7 @@ import Form from './../form';
 import { Lock, Email } from '@material-ui/icons';
 import IconTextField from './components/icon-text-field';
 import Layout from './layout';
+import state from './state';
 
 const styles = (theme) => ({
   link: {
@@ -25,6 +26,7 @@ class SignIn extends Form {
     super(props);
 
     this.forgotPassword = this.forgotPassword.bind(this);
+    this.renderFooter = this.renderFooter.bind(this);
   }
 
   forgotPassword(e) {
@@ -45,23 +47,30 @@ class SignIn extends Form {
         user: user
       }))
       .catch(err => {
+        this.release();
+
         this.props.dispatch({
           type: 'login-error',
           error: err
-        })
-
-        this.release();
+        });
       });
   }
 
-  render() {
-
-    const { classes, type } = this.props;
-
-    if (type !== 'login-logged-out') return null;
+  renderFooter(layoutProps) {
+    const { classes } = layoutProps;
 
     return (
-      <Layout>
+      <a href="#" onClick={this.forgotPassword} className={classes.link}>
+        Forgot your password?
+      </a>
+    );
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <Layout title='Sign in' footer={props => this.renderFooter(props)}>
         <form onSubmit={this.handleSubmit}>
           <IconTextField
             icon={<Email color='action' style={{ fontSize: 20 }}/>}
@@ -101,9 +110,7 @@ class SignIn extends Form {
             Sign in
           </Button>
 
-          <a href="#" onClick={this.forgotPassword} className={classes.link}>
-            Forgot your password?
-          </a>
+
         </form>
       </Layout>
     );
@@ -114,4 +121,8 @@ const mapStateToProps = (state) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(SignIn));
+const component = connect(mapStateToProps)(withStyles(styles)(SignIn));
+
+export default state(component, (props) => {
+  return props.type === 'login-logged-out';
+});

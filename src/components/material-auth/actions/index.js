@@ -20,7 +20,15 @@ export const createAction = (payload) => {
 
 export function checkUser() {
   return Auth.currentAuthenticatedUser()
-    .then(user => createAction({ ...user }))
+    .then(user => {
+      return Auth.verifiedContact(user)
+        .then(data => this.props.dispatch({
+          type: 'login-signed-in',
+          verified: data.verified,
+          unverified: data.unverified,
+          user: user
+        }));
+    })
     .catch(err => {
       console.log("WTF!");
       console.log(err);

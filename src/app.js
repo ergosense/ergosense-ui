@@ -10,11 +10,39 @@ import LoginPage from './pages/login'
 import './App.css';
 
 import { Hub } from 'aws-amplify';
-//import { withAuthenticator } from 'aws-amplify-react';
+import { withAuthenticator } from 'aws-amplify-react';
 import MaterialAuth from './components/material-auth';
+
+import Authenticator from './components/auth/authenticator';
+import Theme from './components/auth/theme';
+import Init from './components/auth/init';
+import SignIn from './components/auth/signin';
+import RequireNewPassword from './components/auth/new-password';
+import ForgotPassword from './components/auth/forgot-password';
+import VerifyContact from './components/auth/verify-contact';
+
+import ErrorHandler from './components/error-handler';
 
 class App extends Component {
 
+  render() {
+    return (
+      <Provider store={store}>
+        <React.Fragment>
+          <ErrorHandler/>
+          <Authenticator hideDefault={true}>
+            <Init/>
+            <SignIn/>
+            <RequireNewPassword/>
+            <ForgotPassword/>
+            <VerifyContact/>
+          </Authenticator>
+        </React.Fragment>
+      </Provider>
+    );
+  }
+
+  /*
   render() {
     return (
       <React.Fragment>
@@ -27,6 +55,7 @@ class App extends Component {
       </React.Fragment>
     );
   }
+  */
   /*
   render() {
     return (

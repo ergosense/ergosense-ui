@@ -1,0 +1,60 @@
+import React from 'react';
+import { Auth } from 'aws-amplify';
+import { AuthPiece } from 'aws-amplify-react';
+import { Hub } from '@aws-amplify/core';
+
+export default class Init extends AuthPiece
+{
+  constructor(props) {
+    super(props);
+
+    this.checkUser = this.checkUser.bind(this);
+    this.onHubCapsule = this.onHubCapsule.bind(this);
+    this.signOut = this.signOut.bind(this);
+
+    this.state = {
+      authState: props.authState,
+      authData: props.authData
+    };
+
+    Hub.listen('auth', this);
+
+    // Configure AWS
+    console.log('AWS');
+    require('./../../config/aws');
+  }
+
+  signOut() {
+    Auth.signOut()
+      .then(() => this.changeState('signedOut'))
+      .catch(err => console.log(err));
+  }
+
+  checkUser() {
+    return this.signOut();
+    const { authState } = this.state;
+
+    return Auth.currentAuthenticatedUser()
+      .then(user => this.changeState('signedIn', user))
+      .catch(err => {
+        console.log(err);
+        this.signOut()
+      });
+  }
+
+  onHubCapsule(capsule) {
+    console.log('EVENT');
+    console.log(capsule);
+
+    const { channel, payload, source } = capsule;
+    if (payload.event === 'configured') this.checkUser();
+  }
+
+  render() {
+    return (
+      <div>
+        loading... {this.props.authState}
+      </div>
+    );
+  }
+}

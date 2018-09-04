@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Auth } from 'aws-amplify';
 import { I18n, JS } from '@aws-amplify/core';
 import { InputAdornment, Typography, CssBaseline, Paper, TextField, Button, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -7,30 +8,17 @@ import { STEP_NEW_PASSWORD, newPassword } from './actions';
 import Form from './../form';
 import { Lock, Email } from '@material-ui/icons';
 import IconTextField from './components/icon-text-field';
+import state from './state';
+import Layout from './layout';
 
 const styles = (theme) => ({
-  layout: {
-    width: 'auto',
-    display: 'block',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    }
-  },
-  paper: {
-    marginTop: theme.spacing.unit * 8,
-    textAlign: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  }
 });
 
 class NewPassword extends Form
 {
   constructor(props) {
     super(props);
+    this.checkUser = this.checkUser.bind(this);
   }
 
   handleSubmit(e) {
@@ -40,50 +28,56 @@ class NewPassword extends Form
     const { user } = this.props;
     const { requiredAttributes } = user.challengeParam;
 
-    newPassword(user, password, requiredAttributes, this.props.dispatch)
-      .then(user => this.release());
+    Auth.completeNewPassword(user, password, requiredAttributes)
+      .then(user => {
+        // If the challenge name is unchanged, we assume no further
+        // steps are to be made on the user.
+        if (user.challengeName !== 'NEW_PASSWORD_REQUIRED') {
+          user.challengeName = null;
+        }
+
+        this.props.dispatch({
+          type: 'login-signed-in',
+          user: user
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   render() {
-    return null;
-
     const { classes } = this.props;
 
     return (
-      <React.Fragment>
-        <CssBaseline />
-        <main className={classes.layout}>
-          <Paper className={classes.paper}>
-            <Typography variant="headline">New password</Typography>
-            <form onSubmit={this.handleSubmit}>
-              <IconTextField
-                icon={<Lock color='action' style={{ fontSize: 20 }}/>}
-                error={false}
-                helperText={false}
-                type="password"
-                label="Password"
-                name="password"
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-                value={this.state.password || ''}
-                margin="normal"
-                fullWidth
-                />
+      <Layout title='Change password'>
+        <form onSubmit={this.handleSubmit}>
+          <IconTextField
+            icon={<Lock color='action' style={{ fontSize: 20 }}/>}
+            error={false}
+            helperText={false}
+            type="password"
+            label="New password"
+            name="password"
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            value={this.state.password || ''}
+            margin="normal"
+            fullWidth
+            />
 
-              <br/><br/>
+          <br/><br/>
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={this.isSubmitting()}
-                fullWidth>
-                Change
-              </Button>
-            </form>
-          </Paper>
-        </main>
-      </React.Fragment>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={this.isSubmitting()}
+            fullWidth>
+            Change
+          </Button>
+        </form>
+      </Layout>
     );
   }
 }
@@ -92,4 +86,9 @@ const mapStateToProps = (state) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(NewPassword));
+const component = connect(mapStateToProps)(withStyles(styles)(NewPassword));
+
+export default state(component, (props) => {
+  const { type, user } = props;
+  return type === 'login-signed-in' && user.challengeName === 'NEW_PASSWORD_REQUIRED';
+});

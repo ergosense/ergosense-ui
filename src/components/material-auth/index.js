@@ -1,6 +1,7 @@
 import React, { Component} from 'react';
 import { connect } from 'react-redux';
 
+import { Auth } from 'aws-amplify';
 import { STEP_LOADING } from './actions';
 import Loading from './loading';
 import SignIn from './signin';
@@ -23,7 +24,22 @@ class MaterialAuth extends Component {
   componentDidMount() {
     // TODO NO!
     require('./../../config/aws');
-    checkUser();
+
+    Auth.currentAuthenticatedUser()
+      .then(user => {
+        console.log('AUTHED');
+        console.log(user);
+        this.props.dispatch({
+          type: 'login-signed-in',
+          user: user
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.dispatch({
+          type: 'login-signed-out'
+        });
+      });
   }
 
   render () {
@@ -34,9 +50,7 @@ class MaterialAuth extends Component {
         <SignIn/>
         <ResetPassword/>
         <NewPassword/>
-        <Default>
-          {this.props.children}
-        </Default>
+        <Default>{this.props.children}</Default>
       </React.Fragment>
     );
   }

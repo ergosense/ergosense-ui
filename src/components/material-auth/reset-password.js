@@ -7,23 +7,16 @@ import { STEP_RESET_VERIFY, STEP_RESET, createAction, resetForgottenPassword, fo
 import Form from './../form';
 import { Lock, Email } from '@material-ui/icons';
 import IconTextField from './components/icon-text-field';
+import state from './state';
+import Layout from './layout';
 
 const styles = (theme) => ({
-  layout: {
-    width: 'auto',
-    display: 'block',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    }
-  },
-  paper: {
-    marginTop: theme.spacing.unit * 8,
-    textAlign: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  link: {
+    textDecoration: 'none',
+    color: theme.palette.primary.main,
+    fontSize: 12,
+    marginTop: 30,
+    display: 'inline-block'
   }
 });
 
@@ -33,7 +26,15 @@ class ResetPassword extends Form
     super(props);
     this.renderCodeInput = this.renderCodeInput.bind(this);
     this.codeSent = this.codeSent.bind(this);
-    this.valid = this.valid.bind(this);
+    this.backToSignIn = this.backToSignIn.bind(this);
+    this.renderFooter = this.renderFooter.bind(this);
+  }
+
+  backToSignIn(e) {
+    e.preventDefault();
+    this.props.dispatch({
+      type: 'login-logged-out'
+    });
   }
 
   handleSubmit(e) {
@@ -98,54 +99,51 @@ class ResetPassword extends Form
     );
   }
 
-  valid(type, error) {
-    return type === 'login-error' && error.code === 'PasswordResetRequiredException';
+  renderFooter(layoutProps) {
+    const { classes } = layoutProps;
+
+    return (
+      <a href="#" onClick={this.backToSignIn} className={classes.link}>
+        Back to sign-in
+      </a>
+    );
   }
 
   render() {
-    const { error, classes, type } = this.props;
-    console.log(this.props);
-    if (!this.valid(type, error)) return null;
-
+    const { classes } = this.props;
     const { delivery } = this.state;
 
     return (
-      <React.Fragment>
-        <CssBaseline />
-        <main className={classes.layout}>
-          <Paper className={classes.paper}>
-            <Typography variant="headline">Reset password</Typography>
-            <form onSubmit={this.handleSubmit}>
-              <IconTextField
-                icon={<Email color='action' style={{ fontSize: 20 }}/>}
-                error={false}
-                helperText={''}
-                label="Email"
-                name="email"
-                onChange={this.handleChange}
-                onBlur={this.handleBlur}
-                value={this.state.email || ''}
-                margin="normal"
-                fullWidth
-                disabled={this.codeSent()}
-                />
+      <Layout title='Reset password' footer={(props) => this.renderFooter(props)}>
+        <form onSubmit={this.handleSubmit}>
+          <IconTextField
+            icon={<Email color='action' style={{ fontSize: 20 }}/>}
+            error={false}
+            helperText={''}
+            label="Email"
+            name="email"
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            value={this.state.email || ''}
+            margin="normal"
+            fullWidth
+            disabled={this.codeSent()}
+            />
 
-              {this.renderCodeInput()}
+          {this.renderCodeInput()}
 
-              <br/><br/>
+          <br/><br/>
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={this.isSubmitting()}
-                fullWidth>
-                Send code
-              </Button>
-            </form>
-          </Paper>
-        </main>
-      </React.Fragment>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={this.isSubmitting()}
+            fullWidth>
+            Send code
+          </Button>
+        </form>
+      </Layout>
     );
   }
 }
@@ -154,4 +152,9 @@ const mapStateToProps = (state) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ResetPassword));
+const component = connect(mapStateToProps)(withStyles(styles)(ResetPassword));
+
+export default state(component, (props) => {
+  const { type, error } = props;
+  return (props.type === 'login-error' && (error && error.code === 'PasswordResetRequiredException')) || props.type === 'login-reset';
+});

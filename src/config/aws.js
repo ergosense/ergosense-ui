@@ -1,4 +1,4 @@
-import { Auth, Hub } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 
 Auth.configure({
   // REQUIRED - Amazon Cognito Region

@@ -5,13 +5,12 @@ const initial = {
 }
 
 export default (state = initial, action) => {
-  console.log(action);
-
   switch (action.type) {
     case 'login-reset':
     case 'login-signed-in':
     case 'login-error':
     case 'login-logged-out':
+    case 'login-verified':
       return { ...state, ...action }
     default:
       return state;
