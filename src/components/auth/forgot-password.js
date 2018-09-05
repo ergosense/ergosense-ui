@@ -4,9 +4,9 @@ import { I18n } from '@aws-amplify/core';
 import { ForgotPassword as BaseForgotPassword } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
 import { Typography, TextField, Button } from '@material-ui/core';
-import Layout from './../material-auth/layout';
-import IconTextField from './../material-auth/components/icon-text-field';
 import { withStyles } from '@material-ui/core/styles';
+import { object, string } from 'yup';
+import { Validator, IconWrapper, Layout } from './';
 
 const styles = (theme) => ({
   sentUsername: {
@@ -17,15 +17,32 @@ const styles = (theme) => ({
 class ForgotPassword extends BaseForgotPassword {
   constructor(props) {
     super(props);
-    this.state = { ...this.state, submitting: false }
+    this.state = { ...this.state, submitting: false, errors: {} }
 
     this.renderFooter = this.renderFooter.bind(this);
     this.submitView = this.submitView.bind(this);
     this.sendView = this.sendView.bind(this);
     this.getSubmitTitle = this.getSubmitTitle.bind(this);
-    this.send = this.send.bind(this);
-    this.submit = this.submit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.validator = new Validator({
+      validation: object({
+        'username': string().required('Email is required').email('Email is invalid'),
+        'code': string().when('$delivery', (delivery, schema) => (delivery ? schema.required('Code is required') : schema)),
+        'password': string().when('$delivery', (delivery, schema) => (delivery ? schema.required('Password is required') : schema))
+      }),
+      inputs: this.inputs,
+      context: this.state,
+      onSubmitStatus: this.setState.bind(this),
+      onSubmit: this.handleSubmit.bind(this),
+      onChange: this.handleInputChange.bind(this),
+      onError: this.setState.bind(this)
+    });
+  }
+
+  error(err) {
+    super.error(err);
+    this.setState({ submitting: false });
   }
 
   renderFooter(layoutProps) {
@@ -49,15 +66,19 @@ class ForgotPassword extends BaseForgotPassword {
   sendView() {
     const { classes } = this.props;
     return (
-      <IconTextField
-        icon={<Email color='action' style={{ fontSize: 20 }}/>}
-        error={false}
-        helperText={false}
-        label={I18n.get('Email')}
-        name="username"
-        onChange={this.handleInputChange}
-        margin="dense"
-        fullWidth />
+      <IconWrapper
+        icon={(defaults) => <Email {...defaults}/>}
+        content={() =>
+          <TextField
+            error={!!this.state.errors.username}
+            helperText={this.state.errors.username || ''}
+            label={I18n.get('Email')}
+            name="username"
+            onBlur={this.validator.blur}
+            onChange={this.validator.change}
+            margin="dense"
+            fullWidth />
+        }/>
     );
   }
 
@@ -69,41 +90,40 @@ class ForgotPassword extends BaseForgotPassword {
         <Typography align='left'>
           The code to reset your password has been sent to the following address: <font className={classes.sentUsername}>{this.inputs.username}</font>
         </Typography>
+
         <TextField
-          error={false}
-          helperText={false}
+          error={!!this.state.errors.code}
+          helperText={this.state.errors.code || ''}
           label={I18n.get('Code')}
           name="code"
-          onChange={this.handleInputChange}
+          onBlur={this.validator.blur}
+          onChange={this.validator.change}
           margin="dense"
           fullWidth />
 
         <TextField
-          error={false}
-          helperText={false}
+          error={!!this.state.errors.password}
+          helperText={this.state.errors.password || ''}
           label={I18n.get('New password')}
           type="password"
           name="password"
-          onChange={this.handleInputChange}
+          onBlur={this.validator.blur}
+          onChange={this.validator.change}
           margin="dense"
           fullWidth />
+
       </React.Fragment>
     )
   }
 
   handleSubmit(e) {
-    e.preventDefault();
-    if (this.state.delivery) {
-      this.submit();
-    } else {
-      this.send();
-    }
+    return this.state.delivery ? this.submit() : this.send();
   }
 
   showComponent() {
     return (
       <Layout title={I18n.get('Reset password')} footer={props => this.renderFooter(props)}>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.validator.submit}>
           { this.state.delivery ? this.submitView() : this.sendView() }
 
           <br/><br/>

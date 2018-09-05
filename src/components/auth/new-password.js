@@ -3,22 +3,29 @@ import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { RequireNewPassword as BaseRequireNewPassword } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
-import { Button } from '@material-ui/core';
-import Layout from './../material-auth/layout';
-import IconTextField from './../material-auth/components/icon-text-field';
+import { TextField, Button } from '@material-ui/core';
+import { object, string } from 'yup';
+import { IconWrapper, Layout, Validator } from './';
 
 export default class RequireNewPassword extends BaseRequireNewPassword {
   constructor(props) {
     super(props);
-    this.state = { ...this.state, submitting: false }
+    this.state = { ...this.state, submitting: false, errors: {} }
 
     this.change = this.change.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-  }
 
-  change(e) {
-    e.preventDefault();
-    super.change();
+    // TODO make HOC
+    this.validator = new Validator({
+      validation: object({
+        'password': string().required(I18n.get('Password is required'))
+      }),
+      inputs: this.inputs,
+      onSubmitStatus: this.setState.bind(this),
+      onSubmit: this.change.bind(this),
+      onChange: this.handleInputChange.bind(this),
+      onError: this.setState.bind(this)
+    });
   }
 
   renderFooter(layoutProps) {
@@ -34,18 +41,21 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
   showComponent() {
     return (
       <Layout title={I18n.get('Change password')} footer={props => this.renderFooter(props)}>
-        <form onSubmit={this.change}>
-          <IconTextField
-            icon={<Lock color='action' style={{ fontSize: 20 }}/>}
-            error={false}
-            helperText={false}
-            type="password"
-            label={I18n.get('New Password')}
-            name="password"
-            onChange={this.handleInputChange}
-            margin="normal"
-            fullWidth
-            />
+        <form onSubmit={this.validator.submit}>
+
+          <IconWrapper
+            icon={(defaults) => <Lock {...defaults}/>}
+            content={() => <TextField
+              error={!!this.state.errors.password}
+              helperText={this.state.errors.password || ''}
+              type="password"
+              name="password"
+              label={I18n.get('New Password')}
+              onBlur={this.validator.blur}
+              onChange={this.validator.change}
+              margin="dense"
+              fullWidth />
+            }/>
 
           <br/><br/>
 
@@ -55,7 +65,7 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
             color="primary"
             disabled={this.state.submitting}
             fullWidth>
-            Change
+            {I18n.get('Change')}
           </Button>
         </form>
       </Layout>

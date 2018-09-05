@@ -14,7 +14,6 @@ import { withAuthenticator } from 'aws-amplify-react';
 import MaterialAuth from './components/material-auth';
 
 import Authenticator from './components/auth/authenticator';
-import Theme from './components/auth/theme';
 import Init from './components/auth/init';
 import SignIn from './components/auth/signin';
 import RequireNewPassword from './components/auth/new-password';

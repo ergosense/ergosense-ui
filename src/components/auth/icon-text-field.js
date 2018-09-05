@@ -20,25 +20,15 @@ class IconTextField extends Component
 {
   constructor(props) {
     super(props);
-    this.onBlur = this.onBlur.bind(this);
-    this.onChange = this.onChange.bind(this);
     this.state = { ...this.state, error: false };
-  }
-
-  onBlur(e) {
-    const { parent, name } = this.props;
-    parent.validate(() => {});
-  }
-
-  onChange(e) {
-    const { parent } = this.props;
-    parent.handleInputChange(e);
   }
 
   render() {
     const { classes, parent } = this.props;
+    const parentState = parent.state;
+    const errors = parentState.errors || {}
 
-    const iconColor = this.props.error ? 'error' : 'action';
+    const iconColor = !!errors[this.props.name] ? 'error' : 'action';
 
     return (
       <React.Fragment>
@@ -47,10 +37,8 @@ class IconTextField extends Component
             {React.cloneElement(this.props.icon, { color: iconColor, style: { fontSize: 20 }})}
           </div>
           <TextField
-            error={!!parent.state.errors[this.props.name]}
-            helperText={parent.state.errors[this.props.name] || ''}
-            onBlur={this.onBlur}
-            onChange={this.onChange}
+            margin="dense"
+            fullWidth
             {...this.props}  />
         </div>
       </React.Fragment>

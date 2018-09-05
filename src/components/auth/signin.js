@@ -3,37 +3,32 @@ import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { SignIn as BaseSignIn } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
-import { Button } from '@material-ui/core';
-import Layout from './../material-auth/layout';
-import IconTextField from './../material-auth/components/icon-text-field';
+import { Button, TextField } from '@material-ui/core';
 import { object, string } from 'yup';
+import { IconWrapper, Layout, Validator } from './';
 
 export default class SignIn extends BaseSignIn {
   constructor(props) {
     super(props);
-    this.state = { ...this.state, submitting: false, validationErrors: 0 }
+    this.state = { ...this.state, submitting: false, errors: {} }
+
+    /// TODO make HOC
+    this.validator = new Validator({
+      validation: object({
+        'username': string().required(I18n.get('Email is required')).email(I18n.get('Email is invalid')),
+        'password': string().required(I18n.get('Password is required'))
+      }),
+      inputs: this.inputs,
+      onSubmitStatus: this.setState.bind(this),
+      onSubmit: this.signIn.bind(this),
+      onChange: this.handleInputChange.bind(this),
+      onError: this.setState.bind(this)
+    });
   }
 
-  validationErrors(err) {
-    this.setState({ errors: err.inner });
-  }
-
-  hasError(field) {
-    return !!this.state.errors.find(i => (i.path === field));
-  }
-
-  getErrors(field) {
-    const err = this.state.errors.find(i => (i.path === field));
-    return err ? err.message : '';
-  }
-
-  signIn(e) {
-    e.preventDefault();
-
-    // Check for validation errors
-    if (this.state.validationErrors) return;
-
-    return super.signIn();
+  error(err) {
+    super.error(err);
+    this.setState({ submitting: false });
   }
 
   renderFooter(layoutProps) {
@@ -41,7 +36,7 @@ export default class SignIn extends BaseSignIn {
 
     return (
       <a href="#" onClick={() => this.changeState('forgotPassword')} className={classes.link}>
-        Forgot your password?
+        {I18n.get('Forgot your password?')}
       </a>
     );
   }
@@ -49,27 +44,35 @@ export default class SignIn extends BaseSignIn {
   showComponent() {
     return (
       <Layout title='Sign in' footer={props => this.renderFooter(props)}>
-        <form onSubmit={this.signIn}>
-          <IconTextField
-            icon={<Email/>}
-            validation={string().required('Email is required').email('Email is invalid')}
-            label="Email"
-            name="username"
-            parent={this}
-            margin="dense"
-            fullWidth
-            />
+        <form onSubmit={this.validator.submit}>
 
-          <IconTextField
-            icon={<Lock/>}
-            parent={this}
-            validation={string().required('Password is required').min(8, 'Invalid password length')}
-            type="password"
-            label={I18n.get('Password')}
-            name="password"
-            margin="dense"
-            fullWidth
-            />
+          <IconWrapper
+            icon={(defaults) => <Email {...defaults}/>}
+            content={() => <TextField
+              error={!!this.state.errors.username}
+              helperText={this.state.errors.username || ''}
+              label={I18n.get('Email')}
+              name="username"
+              onBlur={this.validator.blur}
+              onChange={this.validator.change}
+              margin="dense"
+              fullWidth />
+            }/>
+
+          <IconWrapper
+            icon={(defaults) => <Lock {...defaults}/>}
+            content={() => <TextField
+              icon={<Lock/>}
+              error={!!this.state.errors.password}
+              helperText={this.state.errors.password || ''}
+              label={I18n.get('Password')}
+              name="password"
+              type="password"
+              onBlur={this.validator.blur}
+              onChange={this.validator.change}
+              margin="dense"
+              fullWidth />
+            }/>
 
           <br/><br/>
 
@@ -79,7 +82,7 @@ export default class SignIn extends BaseSignIn {
             color="primary"
             disabled={this.state.submitting}
             fullWidth>
-            Sign in
+            {I18n.get('Sign in')}
           </Button>
 
 
