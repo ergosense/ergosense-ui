@@ -52,30 +52,28 @@ export default class SignIn extends BaseSignIn {
       <Layout title='Sign in' footer={props => this.renderFooter(props)}>
         <form onSubmit={this.validator.submit}>
           <IconWrapper
+            error={!!this.state.errors.username}
             icon={(defaults) => <Email {...defaults}/>}
-            content={() => <TextField
-              error={!!this.state.errors.username}
+            content={(defaults) => <TextField
               helperText={this.state.errors.username || ''}
               label={I18n.get('Email')}
               name="username"
               onBlur={this.validator.blur}
               onChange={this.validator.change}
-              margin="dense"
-              fullWidth />
+              {...defaults} />
             }/>
 
           <IconWrapper
+            error={!!this.state.errors.password}
             icon={(defaults) => <Lock {...defaults}/>}
-            content={() => <TextField
-              error={!!this.state.errors.password}
+            content={(defaults) => <TextField
               helperText={this.state.errors.password || ''}
               label={I18n.get('Password')}
               name="password"
               type="password"
               onBlur={this.validator.blur}
               onChange={this.validator.change}
-              margin="dense"
-              fullWidth />
+              {...defaults} />
             }/>
 
           <br/><br/>

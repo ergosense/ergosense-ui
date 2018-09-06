@@ -18,9 +18,9 @@ const IconWrapper = (props) => {
   return (
     <div className={props.classes.iconTextField}>
       <div className={props.classes.iconTextFieldIcon}>
-        {props.icon({ color: 'action', style: { fontSize: 20 } })}
+        {props.icon({ color: (props.error ? 'error' : 'action'), style: { fontSize: 20 } })}
       </div>
-      {props.content()}
+      {props.content({ error: props.error, margin: "dense", fullWidth: true })}
     </div>
   );
 };
@@ -28,6 +28,7 @@ const IconWrapper = (props) => {
 IconWrapper.propTypes = {
   icon: PropTypes.func.isRequired,
   content: PropTypes.func.isRequired,
+  error: PropTypes.bool
 };
 
 export default withStyles(styles)(IconWrapper);
