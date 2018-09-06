@@ -14,3 +14,5 @@ export { default as SignedIn } from './signed-in';
 // Helpers
 export { default as IconWrapper } from './icon-wrapper';
 export { default as Validator, validator } from './validator';
+export { default as LoadingButton } from './loading-button';
+export { default as ErrorMap } from './error-map';

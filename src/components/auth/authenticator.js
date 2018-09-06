@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Authenticator as BaseAuthenticator, AmplifyTheme, AmplifyMessageMap } from 'aws-amplify-react';
+import { Authenticator as BaseAuthenticator, AmplifyTheme } from 'aws-amplify-react';
 import { Snackbar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { ErrorMap } from './';
+
+export const LOGIN_ERROR = 'login-error';
 
 const styles = theme => ({
   snackbar: {
@@ -12,20 +15,18 @@ const styles = theme => ({
 
 class Authenticator extends BaseAuthenticator {
   handleAuthEvent(state, event) {
-    super.handleAuthEvent(state, event);
-
     if (event.type === 'error') {
-      this.props.dispatch({
-        type: 'LOGIN_ERROR',
-        error: event.data // TODO map error message
-      });
+      const map = this.props.errorMessage || ErrorMap;
+      const message = (typeof map === 'string') ? map : map(event.data);
+
+      this.setState({ error: message });
+      this.props.dispatch({ type: LOGIN_ERROR, error: message });
     }
   }
 
   render() {
     const { auth, authData } = this.state;
     const theme = this.props.theme || AmplifyTheme;
-    const messageMap = this.props.errorMessage || AmplifyMessageMap;
     const { federated } = this.props;
     const props_children = this.props.children || [];
 
@@ -33,7 +34,6 @@ class Authenticator extends BaseAuthenticator {
       return React.cloneElement(child, {
         key: 'aws-amplify-authenticator-props-children-' + index,
         theme: theme,
-        messageMap: messageMap,
         authState: auth,
         authData: authData,
         onStateChange: this.handleStateChange,

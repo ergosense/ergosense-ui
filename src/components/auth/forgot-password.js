@@ -5,7 +5,7 @@ import { Email } from '@material-ui/icons';
 import { Typography, TextField, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { object, string } from 'yup';
-import { validator, IconWrapper, Layout } from './';
+import { validator, IconWrapper, Layout, LoadingButton } from './';
 
 const styles = (theme) => ({
   sentUsername: {
@@ -92,7 +92,7 @@ class ForgotPassword extends BaseForgotPassword {
     return (
       <React.Fragment>
         <Typography align='left'>
-          The code to reset your password has been sent to the following address: <font className={classes.sentUsername}>{this.inputs.username}</font>
+          {I18n.get('The code to reset your password has been sent to the following address')}: <font className={classes.sentUsername}>{this.inputs.username}</font>
         </Typography>
 
         <TextField
@@ -132,14 +132,10 @@ class ForgotPassword extends BaseForgotPassword {
 
           <br/><br/>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.submitting}
-            fullWidth>
+          <LoadingButton
+            submitting={this.state.submitting}>
             { this.getSubmitTitle() }
-          </Button>
+          </LoadingButton>
         </form>
       </Layout>
     );

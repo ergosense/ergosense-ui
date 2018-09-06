@@ -4,7 +4,7 @@ import { SignIn as BaseSignIn } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
 import { Button, TextField } from '@material-ui/core';
 import { object, string } from 'yup';
-import { IconWrapper, Layout, validator } from './';
+import { IconWrapper, Layout, LoadingButton, validator } from './';
 
 export default class SignIn extends BaseSignIn {
   constructor(props) {
@@ -23,6 +23,13 @@ export default class SignIn extends BaseSignIn {
       onChange: this.handleInputChange.bind(this),
       onError: this.setState.bind(this)
     });
+  }
+
+  componentDidUpdate(props, prevState) {
+    // Clear submitting status when we have navigated away from the page
+    if (!this._validAuthStates.includes(this.props.authState) && this.state.submitting) {
+      this.setState({ submitting: false });
+    }
   }
 
   error(err) {
@@ -73,14 +80,10 @@ export default class SignIn extends BaseSignIn {
 
           <br/><br/>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.submitting}
-            fullWidth>
+          <LoadingButton
+            submitting={this.state.submitting}>
             {I18n.get('Sign in')}
-          </Button>
+          </LoadingButton>
         </form>
       </Layout>
     );

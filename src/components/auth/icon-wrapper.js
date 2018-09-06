@@ -26,8 +26,8 @@ const IconWrapper = (props) => {
 };
 
 IconWrapper.propTypes = {
-  icon: PropTypes.element.isRequired,
-  component: PropTypes.element.isRequired,
+  icon: PropTypes.func.isRequired,
+  content: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(IconWrapper);

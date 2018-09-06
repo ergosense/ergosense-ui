@@ -1,5 +1,12 @@
 import React from 'react';
 
+/*
+ | Custom validation
+ | -----------------
+ | Validation wrapper. Exposes certain common form
+ | methods and wraps them with validation calls. This component
+ | should be used as a helper to reduce boiler plate in form elements.
+ */
 export default class Validator
 {
   constructor(props) {
@@ -41,13 +48,13 @@ export default class Validator
 
   submit(e) {
     e.preventDefault();
-    console.log('what');
+
     if (this.props.onSubmitStatus) this.props.onSubmitStatus({ submitting: true });
 
     this.validate()
       .then((errors) => {
         const success = !Object.keys(errors).length;
-        console.log(success);
+
         // Release the "submitting" statue if errors were found
         if (this.props.onSubmitStatus && !success) this.props.onSubmitStatus({ submitting: false });
 
