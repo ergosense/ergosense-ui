@@ -1,12 +1,11 @@
 import React from 'react';
-import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { ForgotPassword as BaseForgotPassword } from 'aws-amplify-react';
-import { Lock, Email } from '@material-ui/icons';
+import { Email } from '@material-ui/icons';
 import { Typography, TextField, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { object, string } from 'yup';
-import { Validator, IconWrapper, Layout } from './';
+import { validator, IconWrapper, Layout } from './';
 
 const styles = (theme) => ({
   sentUsername: {
@@ -25,7 +24,7 @@ class ForgotPassword extends BaseForgotPassword {
     this.getSubmitTitle = this.getSubmitTitle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.validator = new Validator({
+    this.validator = validator({
       validation: object({
         'username': string().required('Email is required').email('Email is invalid'),
         'code': string().when('$delivery', (delivery, schema) => (delivery ? schema.required('Code is required') : schema)),
@@ -40,6 +39,12 @@ class ForgotPassword extends BaseForgotPassword {
     });
   }
 
+  componentDidUpdate(props, prevState) {
+    if (!prevState.delivery && this.state.delivery && this.state.submitting) {
+      this.setState({ submitting: false });
+    }
+  }
+
   error(err) {
     super.error(err);
     this.setState({ submitting: false });
@@ -49,9 +54,9 @@ class ForgotPassword extends BaseForgotPassword {
     const { classes } = layoutProps;
 
     return (
-      <a href="#" onClick={() => this.changeState('signedOut')} className={classes.link}>
+      <button type='button' onClick={() => this.changeState('signedOut')} className={classes.link}>
         {I18n.get('Back to sign-in')}
-      </a>
+      </button>
     );
   }
 
@@ -64,7 +69,6 @@ class ForgotPassword extends BaseForgotPassword {
   }
 
   sendView() {
-    const { classes } = this.props;
     return (
       <IconWrapper
         icon={(defaults) => <Email {...defaults}/>}

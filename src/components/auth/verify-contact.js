@@ -1,11 +1,8 @@
 import React from 'react';
-import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { VerifyContact as BaseVerifyContact } from 'aws-amplify-react';
-import { Lock, Email } from '@material-ui/icons';
 import { FormControl, RadioGroup, Radio, FormControlLabel, Typography, TextField, Button } from '@material-ui/core';
-import Layout from './../material-auth/layout';
-import IconTextField from './../material-auth/components/icon-text-field';
+import { Layout } from './';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
@@ -108,9 +105,9 @@ class VerifyContact extends BaseVerifyContact {
     const { authData } = this.props;
 
     return (
-      <a href="#" onClick={() => this.changeState('signedIn', authData)} className={classes.link}>
+      <button type='button' onClick={() => this.changeState('signedIn', authData)} className={classes.link}>
         {I18n.get('Skip verification')}
-      </a>
+      </button>
     );
   }
 

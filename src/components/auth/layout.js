@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, Grid, CssBaseline, Typography } from '@material-ui/core';
+import { Paper, CssBaseline, Typography } from '@material-ui/core';
 
 const styles = theme => ({
   layout: {
@@ -24,7 +24,11 @@ const styles = theme => ({
     color: theme.palette.secondary.main,
     fontSize: 12,
     marginTop: 30,
-    display: 'inline-block'
+    display: 'inline-block',
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer'
   },
   heading: {
     marginBottom: theme.spacing.unit * 2

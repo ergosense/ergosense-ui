@@ -1,11 +1,10 @@
 import React from 'react';
-import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { SignIn as BaseSignIn } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
 import { Button, TextField } from '@material-ui/core';
 import { object, string } from 'yup';
-import { IconWrapper, Layout, Validator } from './';
+import { IconWrapper, Layout, validator } from './';
 
 export default class SignIn extends BaseSignIn {
   constructor(props) {
@@ -13,7 +12,7 @@ export default class SignIn extends BaseSignIn {
     this.state = { ...this.state, submitting: false, errors: {} }
 
     /// TODO make HOC
-    this.validator = new Validator({
+    this.validator = validator({
       validation: object({
         'username': string().required(I18n.get('Email is required')).email(I18n.get('Email is invalid')),
         'password': string().required(I18n.get('Password is required'))
@@ -35,9 +34,9 @@ export default class SignIn extends BaseSignIn {
     const { classes } = layoutProps;
 
     return (
-      <a href="#" onClick={() => this.changeState('forgotPassword')} className={classes.link}>
+      <button type='button' onClick={() => this.changeState('forgotPassword')} className={classes.link}>
         {I18n.get('Forgot your password?')}
-      </a>
+      </button>
     );
   }
 
@@ -45,7 +44,6 @@ export default class SignIn extends BaseSignIn {
     return (
       <Layout title='Sign in' footer={props => this.renderFooter(props)}>
         <form onSubmit={this.validator.submit}>
-
           <IconWrapper
             icon={(defaults) => <Email {...defaults}/>}
             content={() => <TextField
@@ -62,7 +60,6 @@ export default class SignIn extends BaseSignIn {
           <IconWrapper
             icon={(defaults) => <Lock {...defaults}/>}
             content={() => <TextField
-              icon={<Lock/>}
               error={!!this.state.errors.password}
               helperText={this.state.errors.password || ''}
               label={I18n.get('Password')}
@@ -84,8 +81,6 @@ export default class SignIn extends BaseSignIn {
             fullWidth>
             {I18n.get('Sign in')}
           </Button>
-
-
         </form>
       </Layout>
     );

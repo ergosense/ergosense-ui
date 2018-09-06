@@ -1,5 +1,3 @@
-import { ACTION_LOGIN } from './../components/material-auth/actions'
-
 const initial = {
   type: 'login-logged-out'
 }

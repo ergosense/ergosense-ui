@@ -4,30 +4,44 @@ import { ConnectedRouter } from 'connected-react-router'
 import { Switch, Route } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import store, { history } from './helpers/store'
-import HomePage from './pages/home'
-import SitePage from './pages/site'
-import LoginPage from './pages/login'
-import './App.css';
 
-import { Hub } from 'aws-amplify';
-import { withAuthenticator } from 'aws-amplify-react';
-import MaterialAuth from './components/material-auth';
+//import HomePage from './pages/home'
+//import SitePage from './pages/site'
+//import LoginPage from './pages/login'
 
-import Authenticator from './components/auth/authenticator';
-import Init from './components/auth/init';
-import SignIn from './components/auth/signin';
-import RequireNewPassword from './components/auth/new-password';
-import ForgotPassword from './components/auth/forgot-password';
-import VerifyContact from './components/auth/verify-contact';
+/*
+ | Authenticator components
+ | ------------------------
+ | Series of components that will work together
+ | with the AWS amplify auth component. These are the "states"
+ | of authentication.
+ */
+import {
+  Authenticator,
+  Init,
+  SignIn,
+  RequireNewPassword,
+  ForgotPassword,
+  VerifyContact,
+  ConfirmSignIn,
+  SignedIn,
+  TOTPSetup
+} from './components/auth/';
 
+/*
+ | Handling global errors
+ | ----------------------
+ | Global error handler, will listen to anything in the "error" key
+ | of our redux state store.
+ */
 import ErrorHandler from './components/error-handler';
 
 class App extends Component {
-
   render() {
     return (
       <Provider store={store}>
         <React.Fragment>
+          <CssBaseline />
           <ErrorHandler/>
           <Authenticator hideDefault={true}>
             <Init/>
@@ -35,26 +49,14 @@ class App extends Component {
             <RequireNewPassword/>
             <ForgotPassword/>
             <VerifyContact/>
+            <ConfirmSignIn/>
+            <TOTPSetup/>
+            <SignedIn>SIGNED IN!</SignedIn>
           </Authenticator>
         </React.Fragment>
       </Provider>
     );
   }
-
-  /*
-  render() {
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <Provider store={store}>
-          <MaterialAuth>
-            hello
-          </MaterialAuth>
-        </Provider>
-      </React.Fragment>
-    );
-  }
-  */
   /*
   render() {
     return (

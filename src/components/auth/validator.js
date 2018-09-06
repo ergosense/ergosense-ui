@@ -18,7 +18,7 @@ export default class Validator
       .then((errors) => {
         this.props.onError({ errors: errors });
         return errors;
-      });;
+      });
   }
 
   reduceErrors(err) {
@@ -56,4 +56,8 @@ export default class Validator
       });
 
   }
+}
+
+export const validator = (props) => {
+  return new Validator(props);
 }

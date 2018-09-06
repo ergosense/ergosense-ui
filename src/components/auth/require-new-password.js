@@ -1,11 +1,10 @@
 import React from 'react';
-import { Auth } from 'aws-amplify';
 import { I18n } from '@aws-amplify/core';
 import { RequireNewPassword as BaseRequireNewPassword } from 'aws-amplify-react';
-import { Lock, Email } from '@material-ui/icons';
+import { Lock } from '@material-ui/icons';
 import { TextField, Button } from '@material-ui/core';
 import { object, string } from 'yup';
-import { IconWrapper, Layout, Validator } from './';
+import { IconWrapper, Layout, validator } from './';
 
 export default class RequireNewPassword extends BaseRequireNewPassword {
   constructor(props) {
@@ -16,7 +15,7 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
     this.renderFooter = this.renderFooter.bind(this);
 
     // TODO make HOC
-    this.validator = new Validator({
+    this.validator = validator({
       validation: object({
         'password': string().required(I18n.get('Password is required'))
       }),
@@ -32,9 +31,9 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
     const { classes } = layoutProps;
 
     return (
-      <a href="#" onClick={() => this.changeState('signedOut')} className={classes.link}>
+      <button type='button' onClick={() => this.changeState('signedOut')} className={classes.link}>
         {I18n.get('Back to sign-in')}
-      </a>
+      </button>
     );
   }
 

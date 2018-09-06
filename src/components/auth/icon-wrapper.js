@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { yup } from 'yup';
 
 const styles = (theme) => ({
   iconTextField: {
@@ -25,6 +23,11 @@ const IconWrapper = (props) => {
       {props.content()}
     </div>
   );
+};
+
+IconWrapper.propTypes = {
+  icon: PropTypes.element.isRequired,
+  component: PropTypes.element.isRequired,
 };
 
 export default withStyles(styles)(IconWrapper);

@@ -31,9 +31,6 @@ export default class Init extends AuthPiece
   }
 
   checkUser() {
-    return this.signOut();
-    const { authState } = this.state;
-
     return Auth.currentAuthenticatedUser()
       .then(user => this.changeState('signedIn', user))
       .catch(err => {
@@ -43,18 +40,11 @@ export default class Init extends AuthPiece
   }
 
   onHubCapsule(capsule) {
-    console.log('EVENT');
-    console.log(capsule);
-
-    const { channel, payload, source } = capsule;
-    if (payload.event === 'configured') this.checkUser();
+    const { channel, payload } = capsule;
+    if (channel === 'auth' && payload.event === 'configured') this.checkUser();
   }
 
   render() {
-    return (
-      <div>
-        loading... {this.props.authState}
-      </div>
-    );
+    return null;
   }
 }
