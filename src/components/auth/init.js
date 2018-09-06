@@ -20,8 +20,11 @@ export default class Init extends AuthPiece
     Hub.listen('auth', this);
 
     // Configure AWS
-    console.log('AWS');
-    require('./../../config/aws');
+    Auth.configure({
+      region: this.props.region,
+      userPoolId: this.props.userPoolId,
+      userPoolWebClientId: this.props.userPoolWebClientId
+    });
   }
 
   signOut() {

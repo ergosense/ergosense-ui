@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'connected-react-router'
-import { Switch, Route } from 'react-router-dom'
+import { Provider } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
+import { Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import store, { history } from './helpers/store'
+import store, { history } from './helpers/store';
 
 //import HomePage from './pages/home'
 //import SitePage from './pages/site'
@@ -29,6 +29,13 @@ import {
 } from './components/auth/';
 
 /*
+ | Configuration
+ | -------------
+ | Load up configuration from the environment
+ */
+ import { default as config } from './config/default';
+
+/*
  | Handling global errors
  | ----------------------
  | Global error handler, will listen to anything in the "error" key
@@ -44,7 +51,7 @@ class App extends Component {
           <CssBaseline />
           <ErrorHandler/>
           <Authenticator hideDefault={true}>
-            <Init/>
+            <Init region={config.region} userPoolId={config.userPoolId} userPoolWebClientId={config.userPoolWebClientId}/>
             <SignIn/>
             <RequireNewPassword/>
             <ForgotPassword/>
