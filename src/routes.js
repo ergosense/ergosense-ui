@@ -10,12 +10,14 @@ import { Switch, Route } from 'react-router-dom';
  | for the application.
  */
 import Temporary from './pages/temporary';
+import Account from './pages/account';
 
 const Routes = (props) => {
   return (
     <ConnectedRouter history={history}>
       <Switch>
         <Route path='/' exact component={Temporary} />
+        <Route path='/account' exact component={Account} />
       </Switch>
     </ConnectedRouter>
   );

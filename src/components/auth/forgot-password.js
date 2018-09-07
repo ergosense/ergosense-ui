@@ -45,6 +45,9 @@ class ForgotPassword extends BaseForgotPassword {
     }
   }
 
+  /**
+   * Reset submit state upon submission errors
+   */
   error(err) {
     super.error(err);
     this.setState({ submitting: false });

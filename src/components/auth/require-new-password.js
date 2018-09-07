@@ -2,9 +2,9 @@ import React from 'react';
 import { I18n } from '@aws-amplify/core';
 import { RequireNewPassword as BaseRequireNewPassword } from 'aws-amplify-react';
 import { Lock } from '@material-ui/icons';
-import { TextField, Button } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { object, string } from 'yup';
-import { IconWrapper, Layout, validator } from './';
+import { IconWrapper, Layout, validator, LoadingButton } from './';
 
 export default class RequireNewPassword extends BaseRequireNewPassword {
   constructor(props) {
@@ -14,7 +14,6 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
     this.change = this.change.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
 
-    // TODO make HOC
     this.validator = validator({
       validation: object({
         'password': string().required(I18n.get('Password is required'))
@@ -25,6 +24,14 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
       onChange: this.handleInputChange.bind(this),
       onError: this.setState.bind(this)
     });
+  }
+
+  /**
+   * Reset submit state upon submission errors
+   */
+  error(err) {
+    super.error(err);
+    this.setState({ submitting: false });
   }
 
   renderFooter(layoutProps) {
@@ -58,14 +65,10 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
 
           <br/><br/>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.submitting}
-            fullWidth>
+          <LoadingButton
+            submitting={this.state.submitting}>
             {I18n.get('Change')}
-          </Button>
+          </LoadingButton>
         </form>
       </Layout>
     );

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
+import { Drawer, List, ListItem, ListItemText, ListItemSecondaryAction, Divider, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom"
-import DashboardIcon from '@material-ui/icons/Dashboard'
-import LocationCityIcon from '@material-ui/icons/LocationCity'
+import { Dashboard, LocationCity, Settings } from '@material-ui/icons'
 
 const styles = (theme) => ({
   drawerPaper: {
@@ -25,17 +24,25 @@ const SideBar = (props) => {
         </div>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/">
-            <DashboardIcon/>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-          <ListItem button component={Link} to="/site">
-            <LocationCityIcon/>
-            <ListItemText primary="Site management" />
+          <ListItem dense={true}>
+            <ListItemText primary="Signed in as" secondary="user@gmail.com" />
           </ListItem>
         </List>
         <Divider />
-        <List></List>
+        <List>
+          <ListItem button component={Link} to="/">
+            <Dashboard/>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem button component={Link} to="/site">
+            <LocationCity/>
+            <ListItemText primary="Site management" />
+          </ListItem>
+          <ListItem button component={Link} to="/account">
+            <Settings/>
+            <ListItemText primary="Account" />
+          </ListItem>
+        </List>
     </Drawer>
   );
 }

@@ -3,6 +3,7 @@ import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Typography, Button } from '@material-ui/core';
+import MainLayout from './../layouts/main';
 
 const styles = theme => ({
   layout: {
@@ -34,29 +35,29 @@ class Temporary extends Component {
     const { classes } = this.props;
 
     return (
-      <main className={classes.layout}>
-        <Paper className={classes.paper}>
-          <Typography variant='headline' gutterBottom>User Details</Typography>
-          <div>
-            <code>
-              {this.props.authData
-                && JSON.stringify({
-                  username: this.props.authData.username
-                })
-              }
-            </code>
-          </div>
-          <br/>
-          <Button
-            type='button'
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={this.signOut}>
-            Logout
-          </Button>
-        </Paper>
-      </main>
+      <MainLayout>
+        <main className={classes.layout}>
+          <Paper className={classes.paper}>
+            <Typography variant='headline' gutterBottom>User Details</Typography>
+            <div>
+              <code>
+                {this.props.authData
+                  && Object.keys(this.props.authData).join(', ')
+                }
+              </code>
+            </div>
+            <br/>
+            <Button
+              type='button'
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={this.signOut}>
+              Logout
+            </Button>
+          </Paper>
+        </main>
+      </MainLayout>
     );
   }
 };
