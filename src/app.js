@@ -5,10 +5,6 @@ import { Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import store, { history } from './helpers/store';
 
-//import HomePage from './pages/home'
-//import SitePage from './pages/site'
-//import LoginPage from './pages/login'
-
 /*
  | Authenticator components
  | ------------------------
@@ -43,6 +39,18 @@ import {
  */
 import ErrorHandler from './components/error-handler';
 
+/*
+ | Pages import
+ | ------------
+ | Application pages, these are the main landing pages
+ | for the application.
+ */
+import Temporary from './pages/temporary';
+//import HomePage from './pages/home'
+//import SitePage from './pages/site'
+//import LoginPage from './pages/login'
+
+
 class App extends Component {
   render() {
     return (
@@ -58,7 +66,9 @@ class App extends Component {
             <VerifyContact/>
             <ConfirmSignIn/>
             <TOTPSetup/>
-            <SignedIn>SIGNED IN!</SignedIn>
+            <SignedIn>
+              <Temporary/>
+            </SignedIn>
           </Authenticator>
         </React.Fragment>
       </Provider>

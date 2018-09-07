@@ -1,3 +1,12 @@
+import Amplify from 'aws-amplify';
+
+/*
+ | Log level
+ | ---------
+ | AWS Amplify log level
+ */
+Amplify.Logger.LOG_LEVEL = 'DEBUG';
+
 export default {
   // REQUIRED - Amazon Cognito Region
   region: 'eu-central-1',
