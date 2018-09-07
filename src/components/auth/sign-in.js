@@ -2,16 +2,15 @@ import React from 'react';
 import { I18n } from '@aws-amplify/core';
 import { SignIn as BaseSignIn } from 'aws-amplify-react';
 import { Lock, Email } from '@material-ui/icons';
-import { Button, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { object, string } from 'yup';
 import { IconWrapper, Layout, LoadingButton, validator } from './';
 
 export default class SignIn extends BaseSignIn {
   constructor(props) {
     super(props);
-    this.state = { ...this.state, submitting: false, errors: {} }
+    this.state = { ...this.state, submitting: false, errors: {} };
 
-    /// TODO make HOC
     this.validator = validator({
       validation: object({
         'username': string().required(I18n.get('Email is required')).email(I18n.get('Email is invalid')),
@@ -25,8 +24,12 @@ export default class SignIn extends BaseSignIn {
     });
   }
 
+  /**
+   * Clear submitting status when we have navigated away from the page.
+   * We do this so that if someone clicks "back to sign-in", we don't have a dead
+   * submit button.
+   */
   componentDidUpdate(props, prevState) {
-    // Clear submitting status when we have navigated away from the page
     if (!this._validAuthStates.includes(this.props.authState) && this.state.submitting) {
       this.setState({ submitting: false });
     }
@@ -47,6 +50,18 @@ export default class SignIn extends BaseSignIn {
     );
   }
 
+  /**
+   * Ensure that if someone clicks "back to sign-in" we reset
+   * the original input fields, this will ensure the validation runs
+   * successfully and no old "ghost" inputs are floating around. This is
+   * a hack to deal with the fact that AWS Amplify uses this.inputs instead of
+   * this.state to manage the input fields.
+   */
+  changeState(state, data) {
+    super.changeState(state, data);
+    Object.keys(this.inputs).forEach(k => (this.inputs[k] = ''));
+  }
+
   showComponent() {
     return (
       <Layout title='Sign in' footer={props => this.renderFooter(props)}>
@@ -58,6 +73,7 @@ export default class SignIn extends BaseSignIn {
               helperText={this.state.errors.username || ''}
               label={I18n.get('Email')}
               name="username"
+              value={this.state.username}
               onBlur={this.validator.blur}
               onChange={this.validator.change}
               {...defaults} />
@@ -71,6 +87,7 @@ export default class SignIn extends BaseSignIn {
               label={I18n.get('Password')}
               name="password"
               type="password"
+              value={this.state.password}
               onBlur={this.validator.blur}
               onChange={this.validator.change}
               {...defaults} />

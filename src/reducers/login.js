@@ -1,15 +1,9 @@
-const initial = {
-  type: 'login-logged-out'
-}
+import { AUTH_STATE } from './../components/auth/authenticator';
 
-export default (state = initial, action) => {
+export default (state = {}, action) => {
   switch (action.type) {
-    case 'login-reset':
-    case 'login-signed-in':
-    case 'login-error':
-    case 'login-logged-out':
-    case 'login-verified':
-      return { ...state, ...action }
+    case AUTH_STATE:
+      return { ...state, ...action.payload }
     default:
       return state;
   }

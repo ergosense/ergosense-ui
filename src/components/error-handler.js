@@ -11,7 +11,7 @@ import React, { Component } from 'react';
 import { Logger } from 'aws-amplify';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { Snackbar, SnackbarContent, IconButton, CloseIcon } from '@material-ui/core';
+import { Snackbar, SnackbarContent, IconButton } from '@material-ui/core';
 import { Close, Error as ErrorIcon } from '@material-ui/icons';
 
 // Local logger instance
@@ -33,7 +33,7 @@ class ErrorHandler extends Component
    * open already, ensure that the component will render
    */
   componentDidUpdate(props, prevState) {
-    if (this.props.error !== props.error && !this.state.open) {
+    if (this.props.error !== props.error && this.props.error && !this.state.open) {
       logger.error('application error', this.props.error);
       this.setState({ open: true });
     }

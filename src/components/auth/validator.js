@@ -39,6 +39,7 @@ export default class Validator
   }
 
   blur(e) {
+    console.log(this.props.inputs);
     this.validate()
       .then(() => {
         // Forward call to original blur method

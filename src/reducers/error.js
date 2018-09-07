@@ -1,7 +1,10 @@
-export default (state = {}, action) => {
-  if (action.error) {
-    return { ...state, error: action.error }
-  }
+import { AUTH_STATE } from './../components/auth/authenticator';
 
-  return state;
+export default (state = {}, action) => {
+  switch (action.type) {
+    case AUTH_STATE:
+      return { ...state, error: action.payload.error }
+    default:
+      return state;
+  }
 }

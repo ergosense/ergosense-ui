@@ -1,23 +1,68 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Auth } from 'aws-amplify';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import { Paper, Typography, Button } from '@material-ui/core';
 
-const Temporary = (props) => {
-  return (
-    <Paper>
-      <Typography>User Details</Typography>
-      <code>
-        {JSON.stringify(props.user)}
-      </code>
-      <Button type='button'>
-        Logout
-      </Button>
-    </Paper>
-  );
+const styles = theme => ({
+  layout: {
+    width: 'auto',
+    display: 'block',
+    marginLeft: theme.spacing.unit * 3,
+    marginRight: theme.spacing.unit * 3,
+    [theme.breakpoints.up(600 + theme.spacing.unit * 3 * 2)]: {
+      width: 600,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }
+  },
+  paper: {
+    marginTop: theme.spacing.unit * 10,
+    textAlign: 'center',
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+  }
+});
+
+class Temporary extends Component {
+  signOut() {
+    Auth.signOut()
+      .then(() => { window.location.reload(); })
+      .catch(err => console.log(err));
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    return (
+      <main className={classes.layout}>
+        <Paper className={classes.paper}>
+          <Typography variant='headline' gutterBottom>User Details</Typography>
+          <div>
+            <code>
+              {this.props.authData
+                && JSON.stringify({
+                  username: this.props.authData.username
+                })
+              }
+            </code>
+          </div>
+          <br/>
+          <Button
+            type='button'
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={this.signOut}>
+            Logout
+          </Button>
+        </Paper>
+      </main>
+    );
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(Temporary);
+export default connect(mapStateToProps)(withStyles(styles)(Temporary));

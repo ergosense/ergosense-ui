@@ -2,7 +2,7 @@ import React from 'react';
 import { I18n } from '@aws-amplify/core';
 import { ForgotPassword as BaseForgotPassword } from 'aws-amplify-react';
 import { Email } from '@material-ui/icons';
-import { Typography, TextField, Button } from '@material-ui/core';
+import { Typography, TextField } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { object, string } from 'yup';
 import { validator, IconWrapper, Layout, LoadingButton } from './';

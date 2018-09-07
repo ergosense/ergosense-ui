@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Authenticator as BaseAuthenticator, AmplifyTheme } from 'aws-amplify-react';
-import { Snackbar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { ErrorMap } from './';
 
-export const LOGIN_ERROR = 'login-error';
+export const AUTH_STATE = 'auth-state';
 
 const styles = theme => ({
   snackbar: {
@@ -18,10 +17,10 @@ class Authenticator extends BaseAuthenticator {
     if (event.type === 'error') {
       const map = this.props.errorMessage || ErrorMap;
       const message = (typeof map === 'string') ? map : map(event.data);
-
       this.setState({ error: message });
-      this.props.dispatch({ type: LOGIN_ERROR, error: message });
     }
+
+    this.props.dispatch({ type: AUTH_STATE, payload: this.state });
   }
 
   render() {

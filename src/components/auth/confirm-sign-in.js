@@ -1,9 +1,9 @@
 import React from 'react';
 import { I18n } from '@aws-amplify/core';
 import { ConfirmSignIn as BaseConfirmSignIn } from 'aws-amplify-react';
-import { Button, TextField } from '@material-ui/core';
+import { Typography, Button, TextField } from '@material-ui/core';
 import { object, string } from 'yup';
-import { Layout, validator } from './';
+import { Layout, validator, LoadingButton } from './';
 
 export default class ConfirmSignIn extends BaseConfirmSignIn {
   constructor(props) {
@@ -22,6 +22,11 @@ export default class ConfirmSignIn extends BaseConfirmSignIn {
     });
   }
 
+  error(err) {
+    super.error(err);
+    this.setState({ submitting: false });
+  }
+
   renderFooter(layoutProps) {
     const { classes } = layoutProps;
 
@@ -32,10 +37,27 @@ export default class ConfirmSignIn extends BaseConfirmSignIn {
     );
   }
 
+  renderInfo() {
+    if (this.state.mfaType === 'TOTP') {
+      return (
+        <Typography align='left'>
+          {I18n.get('Please enter the code that appears on your software authenticator')}
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography align='left'>
+          {I18n.get('Please enter the code received via SMS')}
+        </Typography>
+      );
+    }
+  }
+
   showComponent() {
     return (
-      <Layout title='Confirm MFA code' footer={props => this.renderFooter(props)}>
+      <Layout title={I18n.get('Confirm MFA code')} footer={props => this.renderFooter(props)}>
         <form onSubmit={this.validator.submit}>
+          {this.renderInfo()}
           <TextField
             error={!!this.state.errors.code}
             helperText={this.state.errors.code || ''}
@@ -48,14 +70,10 @@ export default class ConfirmSignIn extends BaseConfirmSignIn {
 
           <br/><br/>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={this.state.submitting}
-            fullWidth>
+          <LoadingButton
+            submitting={this.state.submitting}>
             {I18n.get('Confirm')}
-          </Button>
+          </LoadingButton>
         </form>
       </Layout>
     );
