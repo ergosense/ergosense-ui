@@ -1,4 +1,3 @@
-import React from 'react';
 import { Auth } from 'aws-amplify';
 import { AuthPiece } from 'aws-amplify-react';
 import { Hub } from '@aws-amplify/core';

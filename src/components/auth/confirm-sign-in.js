@@ -1,7 +1,7 @@
 import React from 'react';
 import { I18n } from '@aws-amplify/core';
 import { ConfirmSignIn as BaseConfirmSignIn } from 'aws-amplify-react';
-import { Typography, Button, TextField } from '@material-ui/core';
+import { Typography, TextField } from '@material-ui/core';
 import { object, string } from 'yup';
 import { Layout, validator, LoadingButton } from './';
 
@@ -22,6 +22,9 @@ export default class ConfirmSignIn extends BaseConfirmSignIn {
     });
   }
 
+  /**
+   * Reset the submit button on MFA failure.
+   */
   error(err) {
     super.error(err);
     this.setState({ submitting: false });
@@ -66,7 +69,8 @@ export default class ConfirmSignIn extends BaseConfirmSignIn {
             onBlur={this.validator.blur}
             name="code"
             margin="dense"
-            fullWidth />
+            fullWidth
+            autoFocus={true} />
 
           <br/><br/>
 

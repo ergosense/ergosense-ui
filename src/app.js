@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { Switch, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import store, { history } from './helpers/store';
+import store from './helpers/store';
 
 /*
  | Authenticator components
@@ -20,7 +18,6 @@ import {
   ForgotPassword,
   VerifyContact,
   ConfirmSignIn,
-  SignedIn,
   TOTPSetup
 } from './components/auth/';
 
@@ -40,16 +37,11 @@ import {
 import ErrorHandler from './components/error-handler';
 
 /*
- | Pages import
- | ------------
- | Application pages, these are the main landing pages
- | for the application.
+ | Routes
+ | ------
+ | Import the application routing component
  */
-import Temporary from './pages/temporary';
-//import HomePage from './pages/home'
-//import SitePage from './pages/site'
-//import LoginPage from './pages/login'
-
+import Routes from './routes';
 
 class App extends Component {
   render() {
@@ -58,7 +50,7 @@ class App extends Component {
         <React.Fragment>
           <CssBaseline />
           <ErrorHandler/>
-          <Authenticator hideDefault={true}>
+          <Authenticator hideDefault={true} component={<Routes />}>
             <Init region={config.region} userPoolId={config.userPoolId} userPoolWebClientId={config.userPoolWebClientId}/>
             <SignIn/>
             <RequireNewPassword/>
@@ -66,32 +58,11 @@ class App extends Component {
             <VerifyContact/>
             <ConfirmSignIn/>
             <TOTPSetup/>
-            <SignedIn>
-              <Temporary/>
-            </SignedIn>
           </Authenticator>
         </React.Fragment>
       </Provider>
     );
   }
-  /*
-  render() {
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <Switch>
-              <Route path='/' exact component={HomePage} />
-              <Route path='/site' exact component={SitePage} />
-              <Route path='/login' exact component={LoginPage} />
-            </Switch>
-          </ConnectedRouter>
-        </Provider>
-      </React.Fragment>
-    );
-  }
-  */
 }
 
 export default App;

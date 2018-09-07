@@ -9,7 +9,6 @@ export { default as TOTPSetup } from './totp-setup';
 export { default as SignIn } from './sign-in';
 export { default as VerifyContact } from './verify-contact';
 export { default as ConfirmSignIn } from './confirm-sign-in';
-export { default as SignedIn } from './signed-in';
 
 // Helpers
 export { default as IconWrapper } from './icon-wrapper';

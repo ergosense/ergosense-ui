@@ -26,7 +26,8 @@ class Authenticator extends BaseAuthenticator {
   render() {
     const { auth, authData } = this.state;
     const theme = this.props.theme || AmplifyTheme;
-    const { federated } = this.props;
+    // TODO federated login
+    // const { federated } = this.props;
     const props_children = this.props.children || [];
 
     const render_props_children = React.Children.map(props_children, (child, index) => {
@@ -44,6 +45,7 @@ class Authenticator extends BaseAuthenticator {
     return (
       <div>
         {render_props_children}
+        {auth === 'signedIn' && this.props.component}
       </div>
     );
   }
