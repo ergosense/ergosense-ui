@@ -7,11 +7,13 @@
  | the snackbar will render with the appropriate message.
  */
 import { AUTH_STATE } from './../components/auth/authenticator';
+import { ACTION_CHANGE_PASSWORD } from './../components/account/security';
 
 export default (state = {}, action) => {
   switch (action.type) {
     case AUTH_STATE:
-      return { ...state, error: action.payload.error }
+    case ACTION_CHANGE_PASSWORD:
+      return { ...state, error: action.error || action.payload.error }
     default:
       return state;
   }

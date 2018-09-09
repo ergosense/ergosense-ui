@@ -43,11 +43,19 @@ import ErrorHandler from './components/error-handler';
  */
 import Routes from './routes';
 
+/*
+| Theme
+| -----
+| Custom Material UI overrides
+*/
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './components/theme';
+
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <React.Fragment>
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <ErrorHandler/>
           <Authenticator hideDefault={true} component={<Routes />}>
@@ -59,7 +67,7 @@ class App extends Component {
             <ConfirmSignIn/>
             <TOTPSetup/>
           </Authenticator>
-        </React.Fragment>
+        </MuiThemeProvider>
       </Provider>
     );
   }

@@ -45,7 +45,7 @@ class Authenticator extends BaseAuthenticator {
     return (
       <div>
         {render_props_children}
-        {auth === 'signedIn' && this.props.component}
+        {auth === 'signedIn' && this.props.authData && this.props.component}
       </div>
     );
   }

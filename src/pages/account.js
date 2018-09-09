@@ -10,6 +10,8 @@ import green from '@material-ui/core/colors/green';
 import MainLayout from './../layouts/main';
 import { InputLabel, InputAdornment, Input } from '@material-ui/core';
 
+import Security from '../components/account/security';
+
 const styles = theme => ({
   secondary: {
     color: theme.palette.text.secondary,
@@ -33,6 +35,9 @@ const styles = theme => ({
     textAlign: 'right',
     display: 'block',
     paddingBottom: 8
+  },
+  secondaryAction: {
+    right: 18
   }
 });
 
@@ -97,99 +102,8 @@ class Account extends Component {
       <MainLayout>
         <Grid container spacing={24}>
           <Grid item xs={6}>
-            <Paper className={classes.paper}>
-              <List>
-                <ListItem classes={{ gutters: classes.gutters }} dense={true} divider={true}>
-                  <Typography variant='title' gutterBottom>
-                    Change Password
-                  </Typography>
-                </ListItem>
-                <ListItem classes={{ gutters: classes.gutters }}>
-                  <TextField
-                    name="current_password"
-                    placeholder="Current password"
-                    value={this.state.phone_number}
-                    fullWidth/>
-                </ListItem>
-                <ListItem classes={{ gutters: classes.gutters }} divider={true}>
-                  <TextField
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    name="new_password"
-                    placeholder="New password"
-                    value={this.state.phone_number}
-                    fullWidth
-                    InputProps={{
-                      endAdornment:
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="Toggle password visibility"
-                            onClick={this.handleClickShowPassword}
-                          >
-                            {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                    }}/>
-                </ListItem>
-                <ListItem classes={{ gutters: classes.gutters }} className={ classes.alignRight }>
-                  <Button variant="contained" color="secondary">
-                    Change
-                  </Button>
-                </ListItem>
-              </List>
-            </Paper>
+            <Security/>
           </Grid>
-        </Grid>
-
-        <Grid container spacing={24}>
-          <Grid item xs={6}>
-            <Paper className={classes.paper}>
-              <List>
-                <ListItem>
-                  <Typography variant='title' gutterBottom>
-                    Security
-                  </Typography>
-                </ListItem>
-                <Divider/>
-                <ListItem>
-                  <Grid container spacing={0}>
-                    <FormControl>
-                      <Grid item xs={4}>
-                        <FormLabel>Password</FormLabel>
-                      </Grid>
-                      <Grid item xs>
-                        <Input
-                          fullWidth
-                          name="password"
-                          type="password"/>
-                        <FormHelperText>
-                          Hello some extra information
-                        </FormHelperText>
-                      </Grid>
-                    </FormControl>
-                  </Grid>
-                </ListItem>
-                <ListItem>
-                  <TextField
-                    helperText="This phone number will be used for multi-factor authentication"
-                    name="phone_number"
-                    label="Phone"
-                    value={this.state.phone_number}
-                    fullWidth/>
-                </ListItem>
-                <Divider/>
-                <ListItem>
-                  <ListItemText
-                      primary="Two-Factor Authentication"
-                      secondary="What is MFA, perhaps provide a link to go somewhere"
-                    />
-                  <ListItemSecondaryAction>
-                    <Switch checked={true}/>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              </List>
-            </Paper>
-          </Grid>
-
 
           <Grid item xs={6}>
             <Paper className={classes.paper}>
