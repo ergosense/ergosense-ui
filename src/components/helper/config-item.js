@@ -11,7 +11,8 @@ const styles = theme => ({
     borderRight: '1px solid #dedede' // TODO Use color schemes
   },
   secondaryActionContainer: {
-    minWidth: 70
+    minWidth: 70,
+    maxWidth: 70
   },
   secondaryAction: {
     paddingLeft: 10

@@ -88,8 +88,7 @@ class ItemMFAToggle extends Component {
   renderSecondary() {
     return (
       <React.Fragment>
-        Enabling this will require you to enter an additional code at login.
-       <a href="#">What is MFA?</a>
+        Enabling this will require you to enter an additional code at login. <a href="#">What is MFA?</a>
       </React.Fragment>
     );
   }

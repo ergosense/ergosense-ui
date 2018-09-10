@@ -3,7 +3,7 @@ import { Auth, I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 
-import ChangePassword from './../dialog/change-password';
+import VerifyEmail from './../dialog/verify-email';
 import ConfigItem from './../helper/config-item';
 
 const EMPTY_CHAR = '-';
@@ -52,6 +52,7 @@ class ItemEmail extends Component {
   }
 
   success(res) {
+    console.log(res);
     const verified = res.verified.email;
     const unverified = res.unverified.email;
 
@@ -73,25 +74,29 @@ class ItemEmail extends Component {
   render() {
     const { last } = this.props;
 
-    let actions = null;
-
-    // Add "verify" button if the address
-    // still needs to be verified
-    if (!this.state.verified) {
-      actions = (
-        <Button size="small" onClick={this.open}>
-          Verify
-        </Button>
-      );
-    }
-
     return (
       <React.Fragment>
         <ConfigItem
           last={last}
           primary="Primary email address"
           secondary={this.state.email}
-          actions={() => actions} />
+          actions={() =>
+            <Button
+              size="small"
+              disabled={this.state.submitting || !this.state.initialized || this.state.verified}
+              onClick={this.open}>
+              Verify
+            </Button>
+        } />
+
+        {/* TOTP configuration dialog */}
+        <VerifyEmail
+          user={this.props.user}
+          open={this.state.open || false}
+          onDismiss={this.error}
+          onError={this.error}
+          onSuccess={this.success}
+          onClose={() => this.close() }/>
       </React.Fragment>
     );
   }

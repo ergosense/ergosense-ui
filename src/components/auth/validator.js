@@ -15,14 +15,19 @@ export default class Validator
     this.blur = this.blur.bind(this);
     this.validate = this.validate.bind(this);
     this.getInputs = this.getInputs.bind(this);
+    this.getContext = this.getContext.bind(this);
   }
 
   getInputs() {
     return this.props.inputs || (this.props.parent && this.props.parent.state);
   }
 
+  getContext() {
+    return this.props.context || (this.props.parent && this.props.parent.state) || {};
+  }
+
   validate() {
-    return this.props.validation.validate(this.getInputs(), { abortEarly: false, context: this.props.context || {}})
+    return this.props.validation.validate(this.getInputs(), { abortEarly: false, context: this.getContext() })
       .then(() => ({}))
       .catch((err) => this.reduceErrors(err))
       .then((errors) => {
