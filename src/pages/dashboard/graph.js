@@ -1,321 +1,148 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { ResponsiveLine } from '@nivo/line'
+import { AppBar, Toolbar, Tabs, Tab } from '@material-ui/core';
+import { Chip, Paper, Typography, Divider } from '@material-ui/core';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import moment from 'moment';
 
 const styles = theme => ({
   paper: {
+    padding: 0
+  },
+  graph: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
+    fontSize: 10
   },
-  chart: {
-    height: 300
+  heading: {
+    padding: theme.spacing.unit * 2,
+    paddingBottom: 0
+  },
+  legendWrapper: {
+    padding: 4
+  },
+  chip: {
+    marginRight: theme.spacing.unit,
+  },
+  inactive: {
+    opacity: '0.3'
   }
 });
 
 class Graph extends Component {
   state = {
-    value: {}
+    value: {},
+    tab: 0, // Defaut filter by day
+    active: ['date', 'temp', 'db', 'voc'],
+    data: [],
+    key: 0
   };
 
+  filter(data) {
+    return data.reduce((accum, current) => {
+      return accum.concat(this.state.active.reduce((innerAccum, innerCurrent) => {
+        innerAccum[innerCurrent] = current[innerCurrent];
+        return innerAccum;
+      }, {}));
+    }, []);
+  }
+
   data() {
-    return [
-      {
-        "id": "japan",
-        "color": "hsl(113, 70%, 50%)",
-        "data": [
-          {
-            "x": "plane",
-            "y": 173
-          },
-          {
-            "x": "helicopter",
-            "y": 220
-          },
-          {
-            "x": "boat",
-            "y": 180
-          },
-          {
-            "x": "train",
-            "y": 183
-          },
-          {
-            "x": "subway",
-            "y": 258
-          },
-          {
-            "x": "bus",
-            "y": 3
-          },
-          {
-            "x": "car",
-            "y": 90
-          },
-          {
-            "x": "moto",
-            "y": 118
-          },
-          {
-            "x": "bicycle",
-            "y": 98
-          },
-          {
-            "x": "others",
-            "y": 220
-          }
-        ]
-      },
-      {
-        "id": "france",
-        "color": "hsl(277, 70%, 50%)",
-        "data": [
-          {
-            "x": "plane",
-            "y": 57
-          },
-          {
-            "x": "helicopter",
-            "y": 131
-          },
-          {
-            "x": "boat",
-            "y": 1
-          },
-          {
-            "x": "train",
-            "y": 82
-          },
-          {
-            "x": "subway",
-            "y": 11
-          },
-          {
-            "x": "bus",
-            "y": 228
-          },
-          {
-            "x": "car",
-            "y": 224
-          },
-          {
-            "x": "moto",
-            "y": 81
-          },
-          {
-            "x": "bicycle",
-            "y": 23
-          },
-          {
-            "x": "others",
-            "y": 216
-          }
-        ]
-      },
-      {
-        "id": "us",
-        "color": "hsl(119, 70%, 50%)",
-        "data": [
-          {
-            "x": "plane",
-            "y": 177
-          },
-          {
-            "x": "helicopter",
-            "y": 256
-          },
-          {
-            "x": "boat",
-            "y": 72
-          },
-          {
-            "x": "train",
-            "y": 164
-          },
-          {
-            "x": "subway",
-            "y": 223
-          },
-          {
-            "x": "bus",
-            "y": 24
-          },
-          {
-            "x": "car",
-            "y": 33
-          },
-          {
-            "x": "moto",
-            "y": 271
-          },
-          {
-            "x": "bicycle",
-            "y": 128
-          },
-          {
-            "x": "others",
-            "y": 27
-          }
-        ]
-      },
-      {
-        "id": "germany",
-        "color": "hsl(94, 70%, 50%)",
-        "data": [
-          {
-            "x": "plane",
-            "y": 156
-          },
-          {
-            "x": "helicopter",
-            "y": 41
-          },
-          {
-            "x": "boat",
-            "y": 18
-          },
-          {
-            "x": "train",
-            "y": 205
-          },
-          {
-            "x": "subway",
-            "y": 69
-          },
-          {
-            "x": "bus",
-            "y": 220
-          },
-          {
-            "x": "car",
-            "y": 113
-          },
-          {
-            "x": "moto",
-            "y": 24
-          },
-          {
-            "x": "bicycle",
-            "y": 205
-          },
-          {
-            "x": "others",
-            "y": 117
-          }
-        ]
-      },
-      {
-        "id": "norway",
-        "color": "hsl(25, 70%, 50%)",
-        "data": [
-          {
-            "x": "plane",
-            "y": 288
-          },
-          {
-            "x": "helicopter",
-            "y": 137
-          },
-          {
-            "x": "boat",
-            "y": 11
-          },
-          {
-            "x": "train",
-            "y": 118
-          },
-          {
-            "x": "subway",
-            "y": 115
-          },
-          {
-            "x": "bus",
-            "y": 140
-          },
-          {
-            "x": "car",
-            "y": 168
-          },
-          {
-            "x": "moto",
-            "y": 161
-          },
-          {
-            "x": "bicycle",
-            "y": 289
-          },
-          {
-            "x": "others",
-            "y": 145
-          }
-        ]
-      }
-    ]
+    return this.filter([
+      {date: moment().utc().valueOf(), temp: 4000, db: 2400, voc: 1200},
+      {date: moment().add(1, 'd').utc().valueOf(), temp: 3000, db: 1398, voc: 1220},
+      {date: moment().add(2, 'd').utc().valueOf(), temp: 2000, db: 9800, voc: 1400},
+      {date: moment().add(3, 'd').utc().valueOf(), temp: 2780, db: 3908, voc: 900},
+      {date: moment().add(4, 'd').utc().valueOf(), temp: 1890, db: 4800, voc: 1990},
+      {date: moment().add(5, 'd').utc().valueOf(), temp: 2390, db: 3800, voc: 1800},
+      {date: moment().add(6, 'd').utc().valueOf(), temp: 3490, db: 4300, voc: 2100},
+    ]);
   }
 
-  theme() {
-    return {
-      legends: {
-        text: {
-          fontFamily: 'Times New Roman',
-          textColor: '#fff',
-          fontSize: 12,
-          tickColor: '#eee',
-        }
-      },
-      tooltip: {
-        container: {
-          display: 'none'
-        }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.key === this.state.key) {
+      this.setState({ key: this.state.key + 1 });
+    }
+  }
+
+  tabChange(e, value) {
+    this.setState({ tab: value });
+  }
+
+  legend(props) {
+    const { classes } = this.props;
+    const { payload } = props;
+    const { active } = this.state;
+
+    const getClasses = (dataKey) => {
+      let ret = [classes.chip];
+
+      if (!active.includes(dataKey)) {
+        ret = ret.concat([classes.inactive]);
       }
+
+      return ret;
     };
+
+    return (
+      <div className={ classes.legendWrapper }>
+        {
+          payload.map((entry, index) => (
+            <Chip
+              className={getClasses(entry.dataKey).join(' ')}
+              label={entry.value}
+              onClick={() => this.toggleLegend(entry)}
+              key={`legend-${index}`}
+              style={{ backgroundColor: entry.color }} />
+          ))
+        }
+      </div>
+    );
   }
 
-  tooltip(data) {
-    console.log(data);
-    let extract = {};
-
-    extract['x'] = data.id;
-
-    data.data.forEach(i => {
-      extract[i.serie.id] = i.position.y;
-    });
-
-    this.setState({ value: extract });
-    return;
+  toggleLegend(da) {
+    if (this.state.active.includes(da.dataKey)) {
+      const newState = this.state.active.filter(i => (i !== da.dataKey));
+      this.setState({ active: newState || [] });
+    } else {
+      this.setState({ active: ([da.dataKey].concat(this.state.active)) });
+    }
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={ classes.chart }>
-        <ResponsiveLine
-          data={this.data()}
-          margin={{ "top": 20, "right": 20, "bottom": 30, "left": 35 }}
-          xScale={{ "type": "point" }}
-          yScale={{ "type": "linear", "stacked": true, "min": "auto", "max": "auto" }}
-          theme={this.theme()}
-          minY="auto"
-          maxY="auto"
-          stacked={true}
-          dotSize={10}
-          dotColor="inherit:darker(0.3)"
-          dotBorderWidth={2}
-          dotBorderColor="#ffffff"
-          enableDotLabel={false}
-          dotLabel="y"
-          dotLabelYOffset={-12}
-          animate={true}
-          motionStiffness={90}
-          motionDamping={15}
-          tooltip={this.tooltip.bind(this)}
-          legends={[]}/>
+      <Paper className={ classes.paper }>
+        <AppBar position="static">
+          <div className={ classes.heading }>
+            <Typography variant="subheading" color="inherit" gutterBottom>
+              Environment Data
+            </Typography>
+          </div>
 
-        <div>
-          {JSON.stringify(this.state.value)}
+          <Tabs value={this.state.tab} onChange={this.tabChange.bind(this)}>
+            <Tab label="Day" />
+            <Tab label="Week" />
+            <Tab label="Month" href="#basic-tabs" />
+          </Tabs>
+        </AppBar>
+        <div className={ classes.graph }>
+          <ResponsiveContainer height={300}>
+            <LineChart key={this.state.key} data={this.data.bind(this)()} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+              <XAxis dataKey="date" axisLine={false} type="category" padding={{ left: 20, right: 20 }} tickFormatter={timeStr => { return moment(timeStr).format('MM:dd'); }} />
+              <YAxis mirror={false} width={30} axisLine={false} tickLine={false}/>
+              <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+              <Tooltip active={false}/>
+              <Legend content={this.legend.bind(this)}/>
+              <Line strokeWidth={2} type="linear" dataKey="voc" stroke="#dedede" activeDot={{r: 6}}/>
+              <Line strokeWidth={2} type="linear" dataKey="temp" stroke="#8884d8" activeDot={{r: 6}}/>
+              <Line isAnimationActive={true} strokeWidth={2} type="linear" dataKey="db" stroke="#82ca9d" activeDot={{r: 6}}/>
+            </LineChart>
+          </ResponsiveContainer>
         </div>
-      </div>
+      </Paper>
     );
   }
 };

@@ -6,12 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 import MainLayout from './../../layouts/main';
 import Graph from './graph';
 
+import Gauge from './../../components/charts/gauge';
+
 const styles = theme => ({
-  paper: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
-  },
 });
 
 const Dashboard = (props) => {
@@ -20,12 +17,10 @@ const Dashboard = (props) => {
   return (
     <MainLayout name={I18n.get('Dashboard')}>
       <Grid item xs={12}>
-        <Typography variant='display1' gutterBottom>
-          Sensor Data
-        </Typography>
-        <Paper className={classes.paper}>
-          <Graph/>
-        </Paper>
+        <Gauge value={80} name='Temp.' color='#123456'/>
+      </Grid>
+      <Grid item xs={12}>
+        <Graph/>
       </Grid>
     </MainLayout>
   );
