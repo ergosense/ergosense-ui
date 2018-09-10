@@ -26,8 +26,16 @@ export default class Validator
     return this.props.context || (this.props.parent && this.props.parent.state) || {};
   }
 
-  validate() {
-    return this.props.validation.validate(this.getInputs(), { abortEarly: false, context: this.getContext() })
+  validate(path) {
+    let promise;
+
+    if (path) {
+      promise = this.props.validation.validateAt(path, this.getInputs(), { abortEarly: false, context: this.getContext() });
+    } else {
+      promise = this.props.validation.validate(this.getInputs(), { abortEarly: false, context: this.getContext() });
+    }
+
+    return promise
       .then(() => ({}))
       .catch((err) => this.reduceErrors(err))
       .then((errors) => {
@@ -47,7 +55,7 @@ export default class Validator
   }
 
   blur(e) {
-    this.validate()
+    this.validate(e.target.name)
       .then(() => {
         // Forward call to original blur method
         if (this.props.onBlur) this.props.onBlur(e);
