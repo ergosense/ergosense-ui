@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Auth } from 'aws-amplify';
-import { Button, Typography, AppBar, Toolbar, IconButton, Badge } from '@material-ui/core';
+import { Button, Typography, AppBar, Toolbar } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 
 const styles = {
   root: {

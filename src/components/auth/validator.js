@@ -18,7 +18,7 @@ export default class Validator
   }
 
   getInputs() {
-    return this.props.inputs || this.props.parent.state;
+    return this.props.inputs || (this.props.parent && this.props.parent.state);
   }
 
   validate() {

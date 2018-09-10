@@ -1,9 +1,25 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Auth } from 'aws-amplify';
 import { CircularProgress } from '@material-ui/core';
 import { default as BaseQRCode } from 'qrcode.react';
 
-export default class QRCode extends Component {
+const styles = theme => ({
+  container: {
+    position: 'relative',
+    width: '100%',
+    height: '100%'
+  },
+  progress: {
+    position: 'relative',
+    marginLeft: '50%',
+    marginTop: '50%',
+    left: '-20px',
+    top: '-20px'
+  }
+});
+
+class QRCode extends Component {
   constructor(props) {
     super(props);
     this.state = { ...this.state, submitting: false, errors: {} };
@@ -22,8 +38,8 @@ export default class QRCode extends Component {
 
     Auth.setupTOTP(user)
       .then((data) => {
-        console.log(data);
         const code = "otpauth://totp/AWSCognito:" + user.username + "?secret=" + data + "&issuer=AWSCognito";
+
         setTimeout(() => {
           this.setState({ code });
         }, 5000);
@@ -32,14 +48,18 @@ export default class QRCode extends Component {
   }
 
   render() {
+    const { size, classes } = this.props;
     const { code } = this.state;
 
     return (
       <React.Fragment>
-        <br/>
-        {code && <BaseQRCode value={code} />}
-        {!code && <CircularProgress />}
+        <div className={classes.container}>
+        {code && <BaseQRCode value={code} size={size || 128} />}
+        {!code && <CircularProgress size={40} className={classes.progress} />}
+        </div>
       </React.Fragment>
     );
   }
 }
+
+export default withStyles(styles)(QRCode);

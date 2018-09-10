@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Auth, I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper, Typography, Button, TextField } from '@material-ui/core';
-import { List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
-import { InputLabel, InputAdornment, Input, Switch } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { validator, LoadingButton } from './../auth';
 import { object, string } from 'yup';
@@ -64,8 +62,7 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const { classes, open } = this.props;
-    const { editNumber, number } = this.state;
+    const { open } = this.props;
 
     return (
       <Dialog open={open} onClose={this.close}>
