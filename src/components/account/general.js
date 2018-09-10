@@ -5,10 +5,11 @@ import { Paper, Button } from '@material-ui/core';
 import { List } from '@material-ui/core';
 import { SupervisorAccount } from '@material-ui/icons';
 import ChangePassword from './../dialog/change-password';
-import EditPhoneNumber from './../dialog/edit-phone-number';
 import ConfigTitle from './../helper/config-title';
 import ConfigItem from './../helper/config-item';
 import ItemMFAToggle from './item-mfa-toggle';
+import ItemPasswordChange from './item-password-change';
+import ItemEmail from './item-email';
 
 export const ACTION_CHANGE_PASSWORD = 'action-change-password';
 
@@ -51,28 +52,11 @@ class General extends Component {
               icon={() => <SupervisorAccount/>}
               title="General" />
 
-            <ConfigItem
-              primary="Primary email address"
-              secondary="test@gmail.com" />
+            <ItemEmail
+              user={this.props.authData}/>
 
-            <ConfigItem
-              primary="Account password"
-              secondary="**********"
-              actions={() =>
-                <Button size="small" onClick={() => this.open('password')}>
-                  Change
-                </Button>
-              }/>
-
-            <ConfigItem
-              last={true}
-              primary="Phone number"
-              secondary="+27724067515"
-              actions={() =>
-                <Button size="small" onClick={() => this.open('number')}>
-                  Change
-                </Button>
-              }/>
+            <ItemPasswordChange
+              user={this.props.authData}/>
 
             <ItemMFAToggle
               user={this.props.authData}
@@ -80,21 +64,6 @@ class General extends Component {
           </List>
         </Paper>
 
-        {/* Change password dialog */}
-        <ChangePassword
-          user={this.props.authData}
-          open={this.state.open.password || false}
-          onClose={() => this.close('password')}
-          onSuccess={() => true}
-          onError={this.handleError}/>
-
-        {/* Change number dialog */}
-        <EditPhoneNumber
-          user={this.props.authData}
-          open={this.state.open.number || false}
-          onClose={() => this.close('number')}
-          onSuccess={() => true }
-          onError={this.handleError}/>
 
       </React.Fragment>
     );

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Auth, I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
-import { Switch } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
-import TOTPSetup from './../dialog/totp-setup';
+import ChangePassword from './../dialog/change-password';
 import ConfigItem from './../helper/config-item';
 
 const styles = theme => ({
 });
 
-class ItemMFAToggle extends Component {
+class ItemPasswordChange extends Component {
   state = {
     open: false,
     enabled: false,
@@ -22,8 +22,6 @@ class ItemMFAToggle extends Component {
 
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
-    this.toggle = this.toggle.bind(this);
-
     this.error = this.error.bind(this);
     this.success = this.success.bind(this);
   }
@@ -68,58 +66,31 @@ class ItemMFAToggle extends Component {
     this.setState({ open: false });
   }
 
-  toggle(e, checked) {
-    const { user } = this.props;
-    this.setState({ submitting: true, enabled: checked });
-
-    // Handle "disable" event
-    if (!checked) {
-      return Auth.setPreferredMFA(user, 'NOMFA')
-        .then(() => this.success())
-        .catch((err) => this.error(err));
-    }
-
-    // If "enabled", first associate a new MFA device
-    // to the account in order to overwrite any lingering
-    // old connection.
-    this.open();
-  }
-
-  renderSecondary() {
-    return (
-      <React.Fragment>
-        Enabling this will require you to enter an additional code at login.
-       <a href="#">What is MFA?</a>
-      </React.Fragment>
-    );
-  }
-
   render() {
     const { last, user } = this.props;
 
     return (
       <React.Fragment>
         <ConfigItem
-          last={last}
-          primary="Enable MFA"
-          secondary={this.renderSecondary()}
+          laste={last}
+          primary="Account password"
+          secondary="**********"
           actions={() =>
-            <Switch
-              disabled={this.state.submitting || !this.state.initialized}
-              checked={this.state.enabled}
-              onChange={this.toggle}/>
+            <Button size="small" onClick={this.open}>
+              Change
+            </Button>
           }/>
 
-        {/* TOTP configuration dialog */}
-        <TOTPSetup
+        {/* Change password dialog */}
+        <ChangePassword
           user={user}
           open={this.state.open || false}
-          onDismiss={this.error}
-          onError={this.error}
-          onSuccess={this.success}/>
+          onClose={this.close}
+          onSuccess={this.success}
+          onError={this.error}/>
       </React.Fragment>
     );
   }
 };
 
-export default withStyles(styles)(ItemMFAToggle);
+export default withStyles(styles)(ItemPasswordChange);

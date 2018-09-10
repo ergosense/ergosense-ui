@@ -5,7 +5,6 @@ import { Grid } from '@material-ui/core';
 import MainLayout from './../layouts/main';
 
 import General from '../components/account/general';
-import Security from '../components/account/security';
 
 const styles = theme => ({});
 
@@ -20,9 +19,6 @@ class Account extends Component {
         <Grid container spacing={24}>
           <Grid item xs={6}>
             <General/>
-          </Grid>
-          <Grid item xs={6}>
-            <Security/>
           </Grid>
         </Grid>
       </MainLayout>
