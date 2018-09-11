@@ -23,6 +23,16 @@ class Authenticator extends BaseAuthenticator {
     this.props.dispatch({ type: AUTH_STATE, payload: this.state });
   }
 
+  handleStateChange(state, data) {
+    super.handleStateChange(state, data);
+
+    // Forcefully update state object if the current state
+    // is the same as before.
+    if (state === this.state.auth) {
+      this.setState({ authData: data });
+    }
+  }
+
   render() {
     const { auth, authData } = this.state;
     const theme = this.props.theme || AmplifyTheme;

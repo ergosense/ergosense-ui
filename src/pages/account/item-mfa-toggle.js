@@ -3,8 +3,8 @@ import { Auth, I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
 import { Switch } from '@material-ui/core';
 
-import TOTPSetup from './../dialog/totp-setup';
-import ConfigItem from './../helper/config-item';
+import TOTPSetup from './../../components/dialog/totp-setup';
+import ConfigItem from './../../components/helper/config-item';
 
 const styles = theme => ({
 });
@@ -26,25 +26,23 @@ class ItemMFAToggle extends Component {
 
     this.error = this.error.bind(this);
     this.success = this.success.bind(this);
+    this._mounted = false;
   }
 
   componentDidMount() {
+    this._mounted = true;
     const { user } = this.props;
 
-    // Initialize component by reading the current value
-    // from AWS
-    Auth.getPreferredMFA(user)
-      .then((res) => {
-        // For now we only support software MFA due to SMS
-        // having costs to consider
-        this.setState({ initialized: true, enabled: (res === 'TOTP') || (res === 'SOFTWARE_TOKEN_MFA') });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    // Initialize component by reading the current value from AWS
+    this.setState({ initialized: true, enabled: user.preferredMFA === 'SOFTWARE_TOKEN_MFA' });
+  }
+
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   error(err) {
+    if (!this._mounted) return;
     // TODO dispatch global error
     console.log(err);
 
@@ -54,6 +52,7 @@ class ItemMFAToggle extends Component {
   }
 
   success() {
+    if (!this._mounted) return;
     // We assume the correct status has already been set
     // by the "on change" handler
     this.close();
@@ -61,14 +60,18 @@ class ItemMFAToggle extends Component {
   }
 
   open() {
+    if (!this._mounted) return;
     this.setState({ open: true });
   }
 
   close() {
+    if (!this._mounted) return;
     this.setState({ open: false });
   }
 
   toggle(e, checked) {
+    if (!this._mounted) return;
+
     const { user } = this.props;
     this.setState({ submitting: true, enabled: checked });
 

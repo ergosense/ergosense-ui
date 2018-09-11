@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "@material-ui/icons": "^3.0.1",
+    "@nivo/line": "^0.49.1",
     "aws-amplify": "^1.0.8",
     "aws-amplify-react": "^2.0.0",
     "connected-react-router": "^4.4.1",

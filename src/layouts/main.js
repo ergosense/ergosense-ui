@@ -17,13 +17,13 @@ const styles = theme => ({
 });
 
 const MainLayout = (props) => {
-  const { classes } = props;
+  const { classes, name } = props;
 
   return (
     <React.Fragment>
       <SideBar/>
       <Grid item container spacing={40} className={classes.contentwrap} xs>
-        <TopBar />
+        <TopBar name={name} />
         <main className={classes.main}>
           {props.children}
         </main>

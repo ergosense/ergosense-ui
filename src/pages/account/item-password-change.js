@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Auth, I18n } from 'aws-amplify';
+import { I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
-import { LoadingButton } from './../auth';
 
-import ChangePassword from './../dialog/change-password';
-import ConfigItem from './../helper/config-item';
+import { LoadingButton } from './../../components/auth';
+import ChangePassword from './../../components/dialog/change-password';
+import ConfigItem from './../../components/helper/config-item';
 
 const styles = theme => ({
   wrapper: {
@@ -28,34 +28,31 @@ class ItemPasswordChange extends Component {
     this.error = this.error.bind(this);
     this.success = this.success.bind(this);
     this.progress = this.progress.bind(this);
+
+    this._mounted = false;
   }
 
   componentDidMount() {
-    const { user } = this.props;
+    this._mounted = true;
+    this.setState({ initialized: true });
+  }
 
-    // Initialize component by reading the current value
-    // from AWS
-    Auth.getPreferredMFA(user)
-      .then((res) => {
-        // For now we only support software MFA due to SMS
-        // having costs to consider
-        this.setState({ initialized: true, enabled: (res === 'TOTP') || (res === 'SOFTWARE_TOKEN_MFA') });
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   error(err) {
+    if (!this._mounted) return;
     // TODO dispatch global error
     console.log(err);
 
     // Invert the checked status, basically "resetting" it
-    this.setState({ submitting: false, enabled: !this.state.enabled });
+    this.setState({ submitting: false });
     this.close();
   }
 
   success() {
+    if (!this._mounted) return;
     // We assume the correct status has already been set
     // by the "on change" handler
     this.close();
@@ -63,14 +60,17 @@ class ItemPasswordChange extends Component {
   }
 
   progress() {
+    if (!this._mounted) return;
     this.setState({ submitting: true });
   }
 
   open() {
+    if (!this._mounted) return;
     this.setState({ open: true });
   }
 
   close() {
+    if (!this._mounted) return;
     this.setState({ open: false });
   }
 

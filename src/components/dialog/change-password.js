@@ -4,7 +4,7 @@ import { Auth, I18n } from 'aws-amplify';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, TextField } from '@material-ui/core';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import { validator, LoadingButton } from './../auth';
+import { validator } from './../auth';
 import { object, string } from 'yup';
 
 const styles = theme => ({});
@@ -37,9 +37,14 @@ class ChangePassword extends Component {
     });
   }
 
+  componentDidUpdate(props) {
+    // Reset the entire state when we reopen the dialog
+    if (!props.open && this.props.open) {
+      this.setState({ submitting: false, currentPassword: '', newPassword: '', errors: {} });
+    }
+  }
+
   close() {
-    // Reset the entire state
-    this.setState({ submitting: false, currentPassword: '', newPassword: '', errors: {} });
     this.props.onClose();
   }
 
@@ -49,6 +54,9 @@ class ChangePassword extends Component {
 
   changePassword() {
     const { user } = this.props;
+
+    // Dismiss immediately
+    this.props.onProgress();
 
     Auth.changePassword(user, this.state.currentPassword, this.state.newPassword)
       .then(() => {
@@ -96,12 +104,8 @@ class ChangePassword extends Component {
             fullWidth/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.close} color="primary">
-            Cancel
-          </Button>
-          <LoadingButton onClick={this.validator.submit} color="primary" type="button" submitting={this.state.submitting}>
-            Change
-          </LoadingButton>
+          <Button onClick={this.close} color="primary">Cancel</Button>
+          <Button type="button" variant="contained" color="primary" onClick={this.validator.submit}>Change</Button>
         </DialogActions>
       </Dialog>
     );
@@ -113,6 +117,7 @@ ChangePassword.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onProgress: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired
 };
 

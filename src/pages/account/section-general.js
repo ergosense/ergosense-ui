@@ -4,7 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 import { List } from '@material-ui/core';
 import { SupervisorAccount } from '@material-ui/icons';
-import ConfigTitle from './../helper/config-title';
+
+import ConfigTitle from './../../components/helper/config-title';
 import ItemMFAToggle from './item-mfa-toggle';
 import ItemPasswordChange from './item-password-change';
 import ItemEmail from './item-email';
@@ -17,7 +18,7 @@ const styles = theme => ({
   }
 });
 
-class General extends Component {
+class SectionGeneral extends Component {
   constructor(props) {
     super(props);
     this.state = { open: {} };
@@ -72,4 +73,4 @@ const mapStateToProps = (state, ownProps) => {
   return { ...state.login }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(General));
+export default connect(mapStateToProps)(withStyles(styles)(SectionGeneral));

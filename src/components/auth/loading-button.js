@@ -30,10 +30,10 @@ class LoadingButton extends Component {
             variant="contained"
             color="primary"
             fullWidth
+            disabled={submitting}
             { ...this.props }
             classes={{}}
-            submitting={{}}
-            disabled={submitting}>
+            submitting={{}}>
             {this.props.children}
           </Button>
 

@@ -16,9 +16,7 @@ import {
   SignIn,
   RequireNewPassword,
   ForgotPassword,
-  VerifyContact,
-  ConfirmSignIn,
-  TOTPSetup
+  ConfirmSignIn
 } from './components/auth/';
 
 /*
@@ -63,9 +61,7 @@ class App extends Component {
             <SignIn/>
             <RequireNewPassword/>
             <ForgotPassword/>
-            <VerifyContact/>
             <ConfirmSignIn/>
-            <TOTPSetup/>
           </Authenticator>
         </MuiThemeProvider>
       </Provider>

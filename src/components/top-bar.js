@@ -24,12 +24,12 @@ class Navigation extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, name } = this.props;
     return (
       <AppBar position="static">
         <Toolbar disableGutters={false} className={classes.toolbar}>
           <Typography variant="title" color="inherit" className={classes.flex}>
-            Dashboard
+            {name || 'Unknown'}
           </Typography>
           <Button color="inherit" onClick={this.logout}>Logout</Button>
         </Toolbar>

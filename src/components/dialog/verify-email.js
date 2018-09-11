@@ -7,6 +7,8 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } 
 import { validator, LoadingButton } from './../auth';
 import { object, string } from 'yup';
 
+const EMPTY_CHAR = '-';
+
 const styles = theme => ({
   secondary: {
     color: theme.palette.secondary.main
@@ -39,13 +41,14 @@ class VerifyEmail extends Component {
     this.close = this.close.bind(this);
   }
 
-  reset() {
-    // Reset the entire state
-    this.setState({ submitting: false, code: '', errors: {} });
+  componentDidUpdate(props) {
+    // Reset the entire state when we reopen the dialog
+    if (!props.open && this.props.open) {
+      this.setState({ submitting: false, code: '', errors: {} });
+    }
   }
 
   close() {
-    this.reset();
     this.props.onClose();
   }
 
@@ -54,15 +57,17 @@ class VerifyEmail extends Component {
   }
 
   verify() {
-    const { onSuccess, onError } = this.props;
-
-    console.log('SUBMIT!');
-    console.log(this.state);
+    const { onSuccess, onError, onProgress, user } = this.props;
 
     if (this.state.codeSent && this.state.code) {
+      onProgress();
+
+      // Dismiss dialog
+      this.close();
+
       Auth.verifyCurrentUserAttributeSubmit('email', this.state.code)
-        .then(data => (this.close() && onSuccess(data)))
-        .catch(err => (this.close() && onError(err)));
+        .then(data => onSuccess({ email: user.attributes.email, verified: true }))
+        .catch(err => onError(err));
     } else {
       Auth.verifyCurrentUserAttribute('email')
         .then(data => {
@@ -86,7 +91,7 @@ class VerifyEmail extends Component {
         <DialogTitle>Verify email address</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Email address: <span className={classes.secondary}>{user.attributes && user.attributes.email}</span>
+            Email address: <span className={classes.secondary}>{(user.attributes && user.attributes.email) || EMPTY_CHAR}</span>
           </DialogContentText>
           {this.state.codeSent &&
             <TextField
@@ -113,6 +118,15 @@ class VerifyEmail extends Component {
       </Dialog>
     );
   }
+};
+
+VerifyEmail.propTypes = {
+  user: PropTypes.object.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onProgress: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
 };
 
 export default withStyles(styles)(VerifyEmail);

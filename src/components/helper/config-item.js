@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
+import { Grid, ListItem, ListItemText } from '@material-ui/core';
 
 const styles = theme => ({
   gutters: {

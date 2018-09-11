@@ -1,8 +1,12 @@
 import React from 'react';
+import { I18n } from 'aws-amplify';
+import { connect } from 'react-redux';
 import { Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom"
 import { Dashboard, LocationCity, Settings } from '@material-ui/icons'
+
+const EMPTY_CHAR = '-';
 
 const styles = (theme) => ({
   drawerPaper: {
@@ -10,11 +14,20 @@ const styles = (theme) => ({
     width: 240,
     height: '100%'
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  active: {
+    color: '#ffffff'
+  }
 });
 
+const isActive = (location, match) => {
+  return location.pathname === match;
+}
+
 const SideBar = (props) => {
-  const { classes } = props;
+  const { classes, location } = props;
+  console.log(props);
+
   return (
     <Drawer
         variant="permanent"
@@ -25,26 +38,30 @@ const SideBar = (props) => {
         <Divider />
         <List>
           <ListItem dense={true}>
-            <ListItemText primary="Signed in as" secondary="user@gmail.com" />
+            <ListItemText primary={I18n.get('Signed in as')} secondary={(props.authData.attributes && props.authData.attributes.email) || EMPTY_CHAR} />
           </ListItem>
         </List>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/">
+          <ListItem button component={Link} to="/" selected={isActive(location, "/")}>
             <Dashboard/>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button component={Link} to="/site">
+          <ListItem button component={Link} to="/site" selected={isActive(location, "/site")}>
             <LocationCity/>
             <ListItemText primary="Site management" />
           </ListItem>
-          <ListItem button component={Link} to="/account">
+          <ListItem button component={Link} to="/account" selected={isActive(location, "/account")}>
             <Settings/>
             <ListItemText primary="Account" />
           </ListItem>
         </List>
     </Drawer>
   );
-}
+};
 
-export default withStyles(styles)(SideBar);
+const mapStateToProps = (state) => {
+  return { ...state.login, ...state.router }
+};
+
+export default  connect(mapStateToProps)(withStyles(styles)(SideBar));

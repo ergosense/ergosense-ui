@@ -43,7 +43,10 @@ export default class Init extends AuthPiece
 
   onHubCapsule(capsule) {
     const { channel, payload } = capsule;
-    if (channel === 'auth' && payload.event === 'configured') this.checkUser();
+    const isConfigured = payload.event === 'configured';
+    const isSignInWithoutAttributes = (payload.event === 'signIn' && !payload.data.attributes);
+
+    if (channel === 'auth' && (isConfigured || isSignInWithoutAttributes)) this.checkUser();
   }
 
   render() {

@@ -27,6 +27,13 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
   }
 
   /**
+   * Skip user verification on login.
+   */
+  checkContact(user) {
+    this.changeState('signedIn', user);
+  }
+
+  /**
    * Reset submit state upon submission errors
    */
   error(err) {
@@ -50,9 +57,9 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
         <form onSubmit={this.validator.submit}>
 
           <IconWrapper
-            icon={(defaults) => <Lock {...defaults}/>}
-            content={() => <TextField
               error={!!this.state.errors.password}
+            icon={(defaults) => <Lock {...defaults}/>}
+            content={(defaults) => <TextField
               helperText={this.state.errors.password || ''}
               type="password"
               name="password"
@@ -60,7 +67,8 @@ export default class RequireNewPassword extends BaseRequireNewPassword {
               onBlur={this.validator.blur}
               onChange={this.validator.change}
               margin="dense"
-              fullWidth />
+              fullWidth
+              {...defaults} />
             }/>
 
           <br/><br/>

@@ -4,9 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { VerifiedUser } from '@material-ui/icons';
 import green from '@material-ui/core/colors/green';
 
-import { LoadingButton } from './../auth';
-import VerifyEmail from './../dialog/verify-email';
-import ConfigItem from './../helper/config-item';
+import { LoadingButton } from './../../components/auth';
+import VerifyEmail from './../../components/dialog/verify-email';
+import ConfigItem from './../../components/helper/config-item';
 
 const EMPTY_CHAR = '-';
 
@@ -38,13 +38,9 @@ class ItemEmail extends Component {
     this.error = this.error.bind(this);
     this.success = this.success.bind(this);
     this.progress = this.progress.bind(this);
-
-    this._mounted = false;
   }
 
   componentDidMount() {
-    this._mounted = true;
-
     const { user } = this.props;
     this.setState({ initialized: false });
 
@@ -54,12 +50,7 @@ class ItemEmail extends Component {
       .catch((err) => this.error(err));
   }
 
-  componentWillUnmount() {
-    this._mounted = false;
-  }
-
   error(err) {
-    if (!this._mounted) return;
     // TODO dispatch global error
     console.log("WHY")
     console.log(err);
@@ -69,22 +60,18 @@ class ItemEmail extends Component {
   }
 
   success(obj) {
-    if (!this._mounted) return;
     this.setState({ submitting: false, initialized: true, ...obj });
   }
 
   progress() {
-    if (!this._mounted) return;
     this.setState({ submitting: true });
   }
 
   open() {
-    if (!this._mounted) return;
     this.setState({ open: true });
   }
 
   close() {
-    if (!this._mounted) return;
     this.setState({ open: false });
   }
 
