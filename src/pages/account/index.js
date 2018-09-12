@@ -14,7 +14,7 @@ class Account extends Component {
     return (
       <MainLayout name={I18n.get('Account')}>
         <Grid container spacing={24}>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <SectionGeneral/>
           </Grid>
         </Grid>

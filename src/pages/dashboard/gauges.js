@@ -1,7 +1,9 @@
 import React from 'react';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { AccessTime } from '@material-ui/icons';
 
+import lightGreen from '@material-ui/core/colors/lightGreen';
 import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
@@ -20,7 +22,17 @@ const styles = theme => ({
   },
   display1: {
     color: grey[400]
-  }
+  },
+  temp: {
+    backgroundColor: lightGreen[600]
+  },
+  smallIcon: {
+    fontSize: 16,
+    marginBottom: "-3px"
+  },
+  caption: {
+    marginTop: 12
+  },
 });
 
 const Gauges = (props) => {
@@ -31,26 +43,42 @@ const Gauges = (props) => {
       <Grid container spacing={24}>
         <Grid item xs={3} className={classes.reading}>
           <Paper className={ classes.paper }>
-            <Typography variant="subheading" gutterBottom>Temperature</Typography>
-            <Typography variant="display1" classes={{ display1: classes.display1 }}>28ºC</Typography>
+            <Typography variant="subheading" gutterBottom align='left'>Temperature</Typography>
+            <Typography variant="display1" classes={{ display1: classes.display1 }} align='left' gutterBottom>28ºC</Typography>
+            <Divider/>
+            <Typography variant="caption" align="left" className={ classes.caption }>
+              <AccessTime className={ classes.smallIcon }/> updated 4 minutes ago
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={3} className={classes.reading}>
           <Paper className={ classes.paper }>
             <Typography variant="subheading" gutterBottom>Noise levels</Typography>
-            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: orange[200] }}>50dB</Typography>
+            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: orange[200] }} gutterBottom>50dB</Typography>
+            <Divider/>
+            <Typography variant="caption" align="left" className={ classes.caption }>
+              <AccessTime className={ classes.smallIcon }/> updated 4 minutes ago
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={3} className={classes.reading}>
           <Paper className={ classes.paper }>
             <Typography variant="subheading" gutterBottom>Light levels</Typography>
-            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: red[200] }}>28lx</Typography>
+            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: red[200] }} gutterBottom>28lx</Typography>
+            <Divider/>
+            <Typography variant="caption" align="left" className={ classes.caption }>
+              <AccessTime className={ classes.smallIcon }/> updated 4 minutes ago
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={3} className={classes.reading}>
           <Paper className={ classes.paper }>
-            <Typography variant="subheading" gutterBottom>Temperature</Typography>
-            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: red[200] }}>28ºC</Typography>
+            <Typography variant="subheading" gutterBottom>Assets in flux</Typography>
+            <Typography variant="display1" classes={{ display1: classes.display1 }} style={{ color: red[200] }} gutterBottom>50%</Typography>
+            <Divider/>
+            <Typography variant="caption" align="left" className={ classes.caption }>
+              <AccessTime className={ classes.smallIcon }/> updated 4 minutes ago
+            </Typography>
           </Paper>
         </Grid>
       </Grid>

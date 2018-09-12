@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import { List } from '@material-ui/core';
-import { SupervisorAccount } from '@material-ui/icons';
+import grey from '@material-ui/core/colors/grey';
 
 import ConfigTitle from './../../components/helper/config-title';
 import ItemMFAToggle from './item-mfa-toggle';
@@ -15,6 +15,12 @@ export const ACTION_CHANGE_PASSWORD = 'action-change-password';
 const styles = theme => ({
   paper: {
     width: '100%'
+  },
+  subheading: {
+    color: grey[500]
+  },
+  gutterBottom: {
+    marginBottom: 10
   }
 });
 
@@ -45,12 +51,11 @@ class SectionGeneral extends Component {
 
     return (
       <React.Fragment>
+        <Typography variant="subheading" gutterBottom classes={{ subheading: classes.subheading, gutterBottom: classes.gutterBottom }}>
+          General
+        </Typography>
         <Paper className={classes.paper}>
           <List>
-            <ConfigTitle
-              icon={() => <SupervisorAccount/>}
-              title="General" />
-
             <ItemEmail
               user={this.props.authData}/>
 

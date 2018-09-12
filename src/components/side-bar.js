@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom"
-import { Dashboard, LocationCity, Settings } from '@material-ui/icons'
+import { Dashboard, LocationCity, Settings, AccountBox, List as ListIcon } from '@material-ui/icons'
 import grey from '@material-ui/core/colors/grey';
 
 const EMPTY_CHAR = '-';
@@ -51,9 +51,17 @@ const SideBar = (props) => {
             <Dashboard className={ classes.icon }/>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button component={Link} to="/site" selected={isActive(location, "/site")}>
+          <ListItem button component={Link} to="/accounts" selected={isActive(location, "/accounts")}>
+            <AccountBox className={ classes.icon }/>
+            <ListItemText primary="Accounts" />
+          </ListItem>
+          <ListItem button component={Link} to="/workspaces" selected={isActive(location, "/workspaces")}>
             <LocationCity className={ classes.icon }/>
-            <ListItemText primary="Site management" />
+            <ListItemText primary="Workspaces" />
+          </ListItem>
+          <ListItem button component={Link} to="/assets" selected={isActive(location, "/assets")}>
+            <ListIcon className={ classes.icon }/>
+            <ListItemText primary="Assets" />
           </ListItem>
           <ListItem button component={Link} to="/account" selected={isActive(location, "/account")}>
             <Settings className={ classes.icon }/>
