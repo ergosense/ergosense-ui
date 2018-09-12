@@ -10,7 +10,7 @@ import { Switch, Route } from 'react-router-dom';
  | for the application.
  */
 import Dashboard from './pages/dashboard/';
-import Temporary from './pages/temporary';
+// import Temporary from './pages/temporary';
 import Account from './pages/account/';
 
 const Routes = (props) => {

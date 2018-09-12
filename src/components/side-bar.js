@@ -5,6 +5,7 @@ import { Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom"
 import { Dashboard, LocationCity, Settings } from '@material-ui/icons'
+import grey from '@material-ui/core/colors/grey';
 
 const EMPTY_CHAR = '-';
 
@@ -17,6 +18,9 @@ const styles = (theme) => ({
   toolbar: theme.mixins.toolbar,
   active: {
     color: '#ffffff'
+  },
+  icon: {
+    color: grey[800]
   }
 });
 
@@ -44,15 +48,15 @@ const SideBar = (props) => {
         <Divider />
         <List>
           <ListItem button component={Link} to="/" selected={isActive(location, "/")}>
-            <Dashboard/>
+            <Dashboard className={ classes.icon }/>
             <ListItemText primary="Dashboard" />
           </ListItem>
           <ListItem button component={Link} to="/site" selected={isActive(location, "/site")}>
-            <LocationCity/>
+            <LocationCity className={ classes.icon }/>
             <ListItemText primary="Site management" />
           </ListItem>
           <ListItem button component={Link} to="/account" selected={isActive(location, "/account")}>
-            <Settings/>
+            <Settings className={ classes.icon }/>
             <ListItemText primary="Account" />
           </ListItem>
         </List>

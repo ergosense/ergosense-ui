@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Tabs, Tab } from '@material-ui/core';
-import { Chip, Paper, Typography, Divider } from '@material-ui/core';
+import { Tabs, Tab } from '@material-ui/core';
+import { Chip, Paper } from '@material-ui/core';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import moment from 'moment';
+import purple from '@material-ui/core/colors/purple';
 
 const styles = theme => ({
   paper: {
@@ -115,19 +116,11 @@ class Graph extends Component {
 
     return (
       <Paper className={ classes.paper }>
-        <AppBar position="static">
-          <div className={ classes.heading }>
-            <Typography variant="subheading" color="inherit" gutterBottom>
-              Environment Data
-            </Typography>
-          </div>
-
-          <Tabs value={this.state.tab} onChange={this.tabChange.bind(this)}>
-            <Tab label="Day" />
-            <Tab label="Week" />
-            <Tab label="Month" href="#basic-tabs" />
-          </Tabs>
-        </AppBar>
+        <Tabs value={this.state.tab} onChange={this.tabChange.bind(this)}>
+          <Tab label="Day" />
+          <Tab label="Week" />
+          <Tab label="Month" href="#basic-tabs" />
+        </Tabs>
         <div className={ classes.graph }>
           <ResponsiveContainer height={300}>
             <LineChart key={this.state.key} data={this.data.bind(this)()} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
@@ -136,9 +129,9 @@ class Graph extends Component {
               <CartesianGrid strokeDasharray="3 3" vertical={false}/>
               <Tooltip active={false}/>
               <Legend content={this.legend.bind(this)}/>
-              <Line strokeWidth={2} type="linear" dataKey="voc" stroke="#dedede" activeDot={{r: 6}}/>
-              <Line strokeWidth={2} type="linear" dataKey="temp" stroke="#8884d8" activeDot={{r: 6}}/>
-              <Line isAnimationActive={true} strokeWidth={2} type="linear" dataKey="db" stroke="#82ca9d" activeDot={{r: 6}}/>
+              <Line strokeWidth={2} type="linear" dataKey="voc" stroke={purple[600]} activeDot={{r: 6}}/>
+              <Line strokeWidth={2} type="linear" dataKey="temp" stroke={purple[300]} activeDot={{r: 6}}/>
+              <Line isAnimationActive={true} strokeWidth={2} type="linear" dataKey="db" stroke={purple[100]} activeDot={{r: 6}}/>
             </LineChart>
           </ResponsiveContainer>
         </div>
