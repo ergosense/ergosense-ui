@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import store from './helpers/store';
+import store, { history } from './../helpers/store';
 
 /*
  | Authenticator components
@@ -17,14 +17,14 @@ import {
   RequireNewPassword,
   ForgotPassword,
   ConfirmSignIn
-} from './components/auth/';
+} from './../components/auth/';
 
 /*
  | Configuration
  | -------------
  | Load up configuration from the environment
  */
- import { default as config } from './config/default';
+ import { default as config } from './../config/default';
 
 /*
  | Handling global errors
@@ -32,7 +32,8 @@ import {
  | Global error handler, will listen to anything in the "error" key
  | of our redux state store.
  */
-import ErrorHandler from './components/error-handler';
+import ErrorHandler from './../components/error-handler';
+import Notifications from './../components/notifications';
 
 /*
  | Routes
@@ -47,7 +48,7 @@ import Routes from './routes';
 | Custom Material UI overrides
 */
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import theme from './components/theme';
+import theme from './../components/theme';
 
 class App extends Component {
   render() {
@@ -55,8 +56,9 @@ class App extends Component {
       <Provider store={store}>
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
+          <Notifications/>
           <ErrorHandler/>
-          <Authenticator hideDefault={true} component={<Routes />}>
+          <Authenticator hideDefault={true} component={<Routes history={history} />}>
             <Init region={config.region} userPoolId={config.userPoolId} userPoolWebClientId={config.userPoolWebClientId}/>
             <SignIn/>
             <RequireNewPassword/>

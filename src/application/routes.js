@@ -1,5 +1,4 @@
 import React from 'react';
-import { history } from './helpers/store';
 import { ConnectedRouter } from 'connected-react-router';
 import { Switch, Route } from 'react-router-dom';
 
@@ -9,15 +8,15 @@ import { Switch, Route } from 'react-router-dom';
  | Application pages, these are the main landing pages
  | for the application.
  */
-import Dashboard from './pages/dashboard/';
-import Account from './pages/account/';
-import Accounts from './pages/accounts/';
-import Workspaces from './pages/workspaces/';
-import Assets from './pages/assets/';
+import Dashboard from './../pages/dashboard/';
+import Account from './../pages/account/';
+import Accounts from './../pages/accounts/';
+import Workspaces from './../pages/workspaces/';
+import Assets from './../pages/assets/';
 
 const Routes = (props) => {
   return (
-    <ConnectedRouter history={history}>
+    <ConnectedRouter history={props.history}>
       <Switch>
         <Route path='/' exact component={Dashboard} />
         <Route path='/account' exact component={Account} />

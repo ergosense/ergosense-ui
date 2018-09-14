@@ -19,6 +19,9 @@ const styles = (theme) => ({
   active: {
     color: '#ffffff'
   },
+  highlight: {
+    backgroundColor: theme.palette.primary.main
+  },
   icon: {
     color: grey[800]
   }
@@ -36,15 +39,17 @@ const SideBar = (props) => {
     <Drawer
         variant="permanent"
         classes={{ paper: classes.drawerPaper }}>
-        <div className={classes.toolbar}>
-          Ergosense-Logo
+        <div classes={classes.highlight}>
+          <div className={classes.toolbar}>
+            Ergosense-Logo
+          </div>
+          <Divider />
+          <List>
+            <ListItem dense={true}>
+              <ListItemText primary={I18n.get('Signed in as')} secondary={(props.authData.attributes && props.authData.attributes.email) || EMPTY_CHAR} />
+            </ListItem>
+          </List>
         </div>
-        <Divider />
-        <List>
-          <ListItem dense={true}>
-            <ListItemText primary={I18n.get('Signed in as')} secondary={(props.authData.attributes && props.authData.attributes.email) || EMPTY_CHAR} />
-          </ListItem>
-        </List>
         <Divider />
         <List>
           <ListItem button component={Link} to="/" selected={isActive(location, "/")}>
