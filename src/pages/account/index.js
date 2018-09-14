@@ -6,6 +6,7 @@ import { Grid } from '@material-ui/core';
 
 import MainLayout from './../../layouts/main';
 import SectionGeneral from './section-general';
+import SubHeading from './../../components/helper/sub-heading';
 
 const styles = theme => ({});
 
@@ -13,8 +14,8 @@ class Account extends Component {
   render() {
     return (
       <MainLayout name={I18n.get('Account')}>
-        <Grid container spacing={24}>
-          <Grid item xs={12}>
+        <Grid container spacing={24} alignItems='center' justify='center'>
+          <Grid item xs={8}>
             <SectionGeneral/>
           </Grid>
         </Grid>

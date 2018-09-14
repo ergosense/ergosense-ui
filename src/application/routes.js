@@ -10,7 +10,7 @@ import { Switch, Route } from 'react-router-dom';
  */
 import Dashboard from './../pages/dashboard/';
 import Account from './../pages/account/';
-import Accounts from './../pages/accounts/';
+import Organisations from './../pages/organisations/';
 import Workspaces from './../pages/workspaces/';
 import Assets from './../pages/assets/';
 
@@ -20,7 +20,7 @@ const Routes = (props) => {
       <Switch>
         <Route path='/' exact component={Dashboard} />
         <Route path='/account' exact component={Account} />
-        <Route path='/accounts' exact component={Accounts} />
+        <Route path='/organisations' exact component={Organisations} />
         <Route path='/workspaces' exact component={Workspaces} />
         <Route path='/assets' exact component={Assets} />
       </Switch>

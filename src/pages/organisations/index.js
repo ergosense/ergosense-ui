@@ -18,13 +18,13 @@ const styles = theme => ({
   }
 });
 
-const Accounts = (props) => {
+const Organisations = (props) => {
   const { classes } = props;
 
   return (
-    <MainLayout name={I18n.get('Accounts')}>
+    <MainLayout name={I18n.get('Organisations')}>
     </MainLayout>
   );
 };
 
-export default withStyles(styles)(Accounts);
+export default withStyles(styles)(Organisations);

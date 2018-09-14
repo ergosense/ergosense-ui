@@ -56,10 +56,6 @@ const SideBar = (props) => {
             <Dashboard className={ classes.icon }/>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button component={Link} to="/accounts" selected={isActive(location, "/accounts")}>
-            <AccountBox className={ classes.icon }/>
-            <ListItemText primary="Accounts" />
-          </ListItem>
           <ListItem button component={Link} to="/workspaces" selected={isActive(location, "/workspaces")}>
             <LocationCity className={ classes.icon }/>
             <ListItemText primary="Workspaces" />

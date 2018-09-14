@@ -1,30 +1,48 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { I18n } from 'aws-amplify';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import grey from '@material-ui/core/colors/grey';
 
 import MainLayout from './../../layouts/main';
+import Card from './card';
 
 const styles = theme => ({
-  subheading: {
-    color: grey[500]
-  },
-  gutterBottom: {
-    marginBottom: 10
-  },
-  display1: {
-    color: grey[400]
-  }
 });
 
-const Workspaces = (props) => {
-  const { classes } = props;
+class Workspaces extends Component {
+  card = 0;
 
-  return (
-    <MainLayout name={I18n.get('Workspaces')}>
-    </MainLayout>
-  );
+  manage(row) {
+    console.log(row);
+  }
+
+  render() {
+    const { classes } = this.props;
+
+    const keys = { ID: 'id', Name: 'name', Address: 'address' }
+
+    const data = [
+      { 'id': 1, 'name': 'Willowbridge Place', address: '3 Deadland Street, Dead Marshes, Mordor' },
+      { 'id': 2, 'name': 'Test', address: '3 Deadland Street, Dead Marshes, Mordor' }
+    ];
+
+    return (
+      <MainLayout name={I18n.get('Workspaces')}>
+        <Grid container spacing={24}>
+          {data.map(i => {
+            return (
+              <Grid item xs={4} key={`card-${this.card++}`}>
+                <Card
+                  title={i.name}
+                  content={i.address}
+                  onClick={() => this.manage.bind(this)(i)}/>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </MainLayout>
+    );
+  }
 };
 
 export default withStyles(styles)(Workspaces);
