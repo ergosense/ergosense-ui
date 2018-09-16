@@ -28,7 +28,7 @@ const styles = (theme) => ({
 });
 
 const isActive = (location, match) => {
-  return location.pathname === match;
+  return location.pathname.indexOf(match) === 0;
 }
 
 const SideBar = (props) => {

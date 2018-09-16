@@ -13,7 +13,8 @@ class Workspaces extends Component {
   card = 0;
 
   manage(row) {
-    console.log(row);
+    const { history } = this.props;
+    history.push('/workspaces/' + row.id);
   }
 
   render() {
