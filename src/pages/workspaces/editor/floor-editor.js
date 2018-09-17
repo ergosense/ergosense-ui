@@ -94,8 +94,8 @@ class FloorEditor extends Component {
     const canvas = this.refs.canvas;
     const container = this.refs.container;
 
-    const w = container.clientWidth;
-    const h = container.clientHeight;
+    let w = container.clientWidth;
+    let h = container.clientHeight;
     const scale = 2;
     const space = 10 * scale;
     let x = 0;
@@ -107,6 +107,9 @@ class FloorEditor extends Component {
 
     // Wait for the floorplan to load before we draw the grid
     img.onload = () => {
+      w = Math.max(img.naturalWidth, w);
+      h = Math.max(img.naturalHeight, h);
+
       // Set the canvas w/h
       canvas.setAttribute('width', w);
       canvas.setAttribute('height', h);
