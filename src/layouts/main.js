@@ -8,24 +8,24 @@ const styles = theme => ({
   contentwrap: {
     margin: 0,
     width: '100%',
+    height: 'calc(100% - 64px)',
     paddingLeft: 240
   },
   main: {
     width: '100%',
+    height: '100%',
     padding: theme.spacing.unit * 4
   }
 });
 
-const MainLayout = (props) => {
-  const { classes, name } = props;
-
+const MainLayout = ({ classes, name, children }) => {
   return (
     <React.Fragment>
       <SideBar/>
       <Grid item container spacing={40} className={classes.contentwrap} xs>
         <TopBar name={name} />
         <main className={classes.main}>
-          {props.children}
+          {children}
         </main>
       </Grid>
     </React.Fragment>

@@ -12,8 +12,8 @@ import SelectedSensor from './selected-sensor';
 const styles = theme => ({
   editor: {
     position: 'relative',
-    width: 'cal(100% + ' + (theme.spacing.unit * 4) + 'px)',
-    height: window.innerHeight - 64,
+    width: 'calc(100% + ' + (theme.spacing.unit * 8) + 'px)',
+    height: 'calc(100% + ' + (theme.spacing.unit * 8) + 'px)',
     margin: (theme.spacing.unit * 4) * -1,
     backgroundColor: '#ffffff'
   },

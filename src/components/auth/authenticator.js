@@ -53,10 +53,10 @@ class Authenticator extends BaseAuthenticator {
     });
 
     return (
-      <div>
+      <React.Fragment>
         {render_props_children}
         {auth === 'signedIn' && this.props.authData && this.props.component}
-      </div>
+      </React.Fragment>
     );
   }
 }

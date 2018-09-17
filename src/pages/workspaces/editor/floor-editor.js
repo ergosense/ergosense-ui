@@ -5,11 +5,19 @@ import { withStyles } from '@material-ui/core/styles';
 import { TweenLite, Power3 } from "gsap/all";
 import PaperHeading from './../../../components/helper/paper-heading';
 
+import Sensor, { ActiveSensor } from './graphics/sensor';
+
 const styles = theme => ({
   container: {
     width: '100%',
     height: '100%',
-    position: 'relative'
+    position: 'relative',
+    overflow: 'hidden'
+  },
+  canvas: {
+    position: 'absolute',
+    top: 0,
+    left: 0
   },
   zoom: {
     position: 'absolute',
@@ -18,136 +26,183 @@ const styles = theme => ({
   }
 });
 
+const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
 class FloorEditor extends Component {
   state =  {
-    x: 0,
-    y: 0,
-    fixedX: 0,
-    fixedY: 0,
-    zoom: 1
+    selected: null,
+    dragging: null,
+    panning: { top: 0, left: 0 },
+    panningCaptured: null,
+    mouseCaptured: null,
+    sensors: []
   };
 
   componentDidMount() {
-    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    const canvas = this.refs.canvas;
+    canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+
+    // Resize listener
+    window.addEventListener("resize", this.resizeWindow.bind(this));
+
+    // TEMP
+    this.setState({ sensors: [ new Sensor(200, 200), new ActiveSensor(300, 300, true) ] });
+
+    // TEMP
+    this.drawCanvas();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    const canvas = this.refs.canvas;
+    canvas.removeEventListener('mousemove', this.onMouseMove.bind(this));
+
+    // Deregister the resize listener
+    window.removeEventListener("resize", this.resizeWindow.bind(this));
   }
 
   onMouseMove(e) {
-    if (this.state.dragging) {
-      const { mouseX, mouseY } = this.state;
+    let sensor;
+    let panningCaptured;
 
-      const diffX = e.clientX - mouseX;
-      const diffY = e.clientY - mouseY;
+    if (sensor = this.state.dragging) {
+      sensor.x = (e.offsetX - (e.offsetX % 20));
+      sensor.y = (e.offsetY - (e.offsetY % 20));
+    }
 
-      console.log(diffX + ' - ' + diffY);
+    if (panningCaptured = this.state.panningCaptured) {
+      let { x, y } = this.state.mouseCaptured;
+      console.log(panningCaptured);
 
-      this.setState({ x: this.state.fixedX + diffX, y: this.state.fixedY + diffY });
+      console.log(e.offsetX + ' ' + e.offsetY);
+      x = e.clientX - x;
+      y = e.clientY - y;
+
+      console.log('x' + x + ' y ' + y);
+      console.log(this.state.panning);
+      this.setState({ panning: { left: panningCaptured.x + x, top: panningCaptured.y + y } });
     }
   }
 
-  getViewBox() {
-    const svg = this.refs.editor;
-    return svg.getAttribute('viewBox').split(' ');
+  resizeWindow() {
+    console.log('resize');
+    this.drawCanvas();
   }
 
-  setViewBox(minX, minY, width, height) {
-    const svg = this.refs.editor;
-    svg.setAttribute('viewBox', '' + minX + ' ' + minY + ' ' + width + ' ' + height);
-  }
+  drawCanvas() {
+    if (!this.state.panning) return;
 
-  onLoad(e) {
-    console.log("LOAD!");
+    const canvas = this.refs.canvas;
+    const container = this.refs.container;
 
-    // Set physical viewbox value
-    const svg = this.refs.editor;
-    const width = svg.width.baseVal.value;
-    const height = svg.height.baseVal.value;
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    const scale = 2;
+    const space = 10 * scale;
+    let x = 0;
+    let y = 0;
 
-    // Without setting this, the animation won't work properly
-    this.setViewBox(0, 0, width, height);
-  }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.zoom !== this.state.zoom) {
-      this.animateZoom();
+    // Draw the image
+    const img = new Image;
+
+    // Wait for the floorplan to load before we draw the grid
+    img.onload = () => {
+      // Set the canvas w/h
+      canvas.setAttribute('width', w);
+      canvas.setAttribute('height', h);
+
+      // Create 2D context
+      const context = canvas.getContext('2d');
+
+      // Clear context
+      context.clearRect(0, 0, w, h);
+
+      // Draw the floor plan
+      context.drawImage(img, 0, 0);
+
+      while (y < h) {
+        y = y + space;
+        context.beginPath();
+
+        context.moveTo(0.5, y + 0.5);
+        context.lineTo(w + 0.5, y + 0.5);
+
+        // Set grid colour
+        context.strokeStyle = "#ccc";
+        context.lineWidth = 1;
+
+        context.stroke();
+        context.closePath();
+      }
+
+      while (x < w) {
+        x = x + space;
+        context.beginPath();
+
+        context.moveTo(x + 0.5, 0.5);
+        context.lineTo(x + 0.5, h + 0.5);
+
+        // Set grid colour
+        context.strokeStyle = "#ccc";
+        context.lineWidth = 1;
+
+        context.stroke();
+        context.closePath();
+      }
+
+      // Draw circles
+      this.state.sensors.forEach(sensor => sensor.draw(context));
     }
+
+    // Set the floorplan source, this will start loading the image
+    // in the background.
+    img.src ='/plan1.jpg';
+
+    requestAnimationFrame(this.drawCanvas.bind(this));
   }
 
-  animateZoom() {
-    const svg = this.refs.editor;
-    const width = svg.width.baseVal.value;
-    const height = svg.height.baseVal.value;
+  onClick(e) {
+    const x = e.nativeEvent.offsetX;
+    const y = e.nativeEvent.offsetY;
 
-    const viewBox = "0 0 " + (width / this.state.zoom) + " " + (height / this.state.zoom);
-
-    var myAnimation = TweenLite.to(svg, 1, {
-      attr: { viewBox: viewBox },
-      ease: Power3.easeInOut
+    const sensor = this.state.sensors.find(i => {
+      return i.match(x, y);
     });
-  }
 
-
-  increaseZoom() {
-    this.setState({ zoom: this.state.zoom + 0.5 });
+    this.setState({ selected: sensor });
   }
 
   onMouseDown(e) {
-    console.log('DOWN!')
-    this.setState({
-      dragging: true,
-      mouseX: e.clientX,
-      mouseY: e.clientY,
-      fixedX: this.state.x,
-      fixedY: this.state.y
+    const x = e.nativeEvent.offsetX;
+    const y = e.nativeEvent.offsetY;
+
+    const sensor = this.state.sensors.find(i => {
+      return i.match(x, y);
     });
+
+    this.setState({ mouseCaptured: { x: e.clientX, y: e.clientY } });
+    this.setState({ panningCaptured: !sensor ? { x: this.refs.canvas.offsetLeft, y: this.refs.canvas.offsetTop } : false });
+    this.setState({ dragging: sensor });
   }
 
-  onMouseUp() {
-    this.setState({ dragging: false });
+  onMouseUp(e) {
+    this.setState({ dragging: null, panningCaptured: false });
   }
 
   render() {
     const { classes } = this.props;
-    const { width, height, x, y } = this.state;
 
     return (
-      <div className={ classes.container }>
-        <svg
-          onLoad={this.onLoad.bind(this)}
+      <div className={ classes.container } ref='container'>
+        <canvas
+          ref='canvas'
+          className={ classes.canvas }
+          onClick={this.onClick.bind(this)}
           onMouseDown={this.onMouseDown.bind(this)}
           onMouseUp={this.onMouseUp.bind(this)}
-          width='100%'
-          height='100%'
-          xmlns="http://www.w3.org/2000/svg"
-          ref='editor'>
-          <defs>
-            <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" strokeWidth="0.5"/>
-            </pattern>
-            <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-              <rect width="100" height="100" fill="url(#smallGrid)"/>
-              <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" strokeWidth="1"/>
-            </pattern>
-          </defs>
-
-          <svg x={x} y={y} width={1447} height={1000}>
-            <image xlinkHref="/plan1.jpg" x="0" y="0"/>
-            <circle cx="200" cy="100" r="4" fill="red" />
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </svg>
-
-
-        <Button
-          variant="fab"
-          onClick={this.increaseZoom.bind(this)}
-          aria-label="Add"
-          className={classes.zoom}>
-          asd
-        </Button>
+          onMouseLeave={this.onMouseUp.bind(this)}
+          style={{ ...this.state.panning }}>
+        </canvas>
       </div>
     );
   }
