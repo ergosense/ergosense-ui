@@ -12,7 +12,6 @@ const styles = theme => ({
   },
   main: {
     width: '100%',
-    maxWidth: 1200,
     padding: theme.spacing.unit * 4
   }
 });

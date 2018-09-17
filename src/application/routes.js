@@ -12,7 +12,7 @@ import Dashboard from './../pages/dashboard/';
 import Account from './../pages/account/';
 import Organisations from './../pages/organisations/';
 import Workspaces from './../pages/workspaces/';
-import WorkspaceEditor from './../pages/workspaces/editor';
+import WorkspaceEditor from './../pages/workspaces/editor/';
 import Assets from './../pages/assets/';
 
 const Routes = (props) => {

@@ -9,6 +9,7 @@
     "aws-amplify-react": "^2.0.0",
     "connected-react-router": "^4.4.1",
     "formik": "^1.1.1",
+    "gsap": "^2.0.2",
     "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
