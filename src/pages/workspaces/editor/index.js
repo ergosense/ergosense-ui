@@ -8,6 +8,7 @@ import MainLayout from './../../../layouts/main';
 import FloorList from './floor-list';
 import FloorEditor from './floor-editor';
 import SelectedSensor from './selected-sensor';
+import { animate } from './../../../components/helper/functions';
 
 const styles = theme => ({
   editor: {
@@ -43,15 +44,22 @@ class WorkspaceEditor extends Component {
   card = 0;
 
   state = {
-    floor: ''
-  }
-
-  manage(row) {
-    console.log(row);
+    floor: '',
+    scale: 1,
+    selected: null
   }
 
   floorChange(e) {
+    const self = this;
+
     this.setState({ [e.target.name]: e.target.value });
+
+    // Zoom
+    animate(this.state.scale, 1.5, 15, (i) => this.setState({ scale: i }));
+  }
+
+  onSelect(sensor) {
+    this.setState({ selected: sensor && sensor.id });
   }
 
   render() {
@@ -67,7 +75,9 @@ class WorkspaceEditor extends Component {
       <MainLayout name={I18n.get('Workspace Editor')}>
         <div className={ classes.editor }>
           <FloorEditor
-            zoom={this.state.zoom}/>
+            selected={this.state.selected}
+            scale={this.state.scale}
+            onSelect={this.onSelect.bind(this)}/>
 
           <FloorList
             value={this.state.floor}

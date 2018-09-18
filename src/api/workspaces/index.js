@@ -5,7 +5,7 @@ import { paged } from './../helpers/paginated';
  */
 const temporary = {
   data: [
-    { id: 1, name: 'Ergoform Factory' }
+    { id: 1, name: 'Ergoform Factory', address: 'Some street, Dead marshes, Mordor' }
   ],
   _pagination: {
     offset: 0,
@@ -25,5 +25,12 @@ export default {
   get: () => {
     // TODO handle paging
     return Promise.resolve(paged(temporary));
+  },
+  getFloors: (workspaceId) => {
+    return Promise.resolve({
+      data: [
+        { id: 1, name: 'Floor A', image: '/plan1.jpg' }
+      ]
+    });
   }
 }

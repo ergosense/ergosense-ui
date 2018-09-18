@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { I18n } from 'aws-amplify';
 import { Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -7,15 +6,11 @@ import { withStyles } from '@material-ui/core/styles';
 import MainLayout from './../../layouts/main';
 import Card from './card';
 
-import { workspaces } from './../../actions/';
-
 const styles = theme => ({
 });
 
 class Workspaces extends Component {
-  componentDidMount() {
-    this.props.dispatch(workspaces.get());
-  }
+  card = 0;
 
   manage(row) {
     const { history } = this.props;
@@ -23,13 +18,21 @@ class Workspaces extends Component {
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { classes } = this.props;
+
+    const keys = { ID: 'id', Name: 'name', Address: 'address' }
+
+    const data = [
+      { 'id': 1, 'name': 'Willowbridge Place', address: '3 Deadland Street, Dead Marshes, Mordor' },
+      { 'id': 2, 'name': 'Test', address: '3 Deadland Street, Dead Marshes, Mordor' }
+    ];
+
     return (
       <MainLayout name={I18n.get('Workspaces')}>
         <Grid container spacing={24}>
-          {data && data.data().map(i => {
+          {data.map(i => {
             return (
-              <Grid item xs={4} key={`card-${i.id}`}>
+              <Grid item xs={4} key={`card-${this.card++}`}>
                 <Card
                   title={i.name}
                   content={i.address}
@@ -43,8 +46,4 @@ class Workspaces extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return { ...state.workspaces }
-};
-
-export default connect(mapStateToProps)(withStyles(styles)(Workspaces));
+export default withStyles(styles)(Workspaces);
